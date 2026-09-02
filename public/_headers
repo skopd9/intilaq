@@ -1,0 +1,13 @@
+# Cloudflare Workers static assets — force UTF-8 so Arabic and punctuation
+# (انطلاق, ·, …) are not misread as Windows-1252 / ISO-8859-1.
+/
+  Content-Type: text/html; charset=utf-8
+
+/*.html
+  Content-Type: text/html; charset=utf-8
+
+/apply
+  Content-Type: text/html; charset=utf-8
+
+/index
+  Content-Type: text/html; charset=utf-8

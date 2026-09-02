@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Intilaq · Applications</title>
+<style>
+  :root{
+    --bg:#0B0E13; --panel:#151B23; --line:#2B3440; --text:#EAEDF1; --dim:#8A93A0;
+    --acc:#39434F; --win:#0F9D63; --mono:'Geist Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:32px 20px 80px}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--dim);margin:0 0 24px;font-size:13px}
+  .login{max-width:360px;margin:80px auto;text-align:center}
+  input{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 12px;font:inherit;width:100%}
+  button{background:var(--win);color:#04070B;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;margin-top:10px}
+  button.secondary{background:transparent;color:var(--text);border:1px solid var(--line);margin-left:8px}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .count{color:var(--dim);font-family:var(--mono);font-size:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--dim);font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;position:sticky;top:0;background:var(--bg)}
+  tr:hover td{background:var(--panel)}
+  .id{font-family:var(--mono);color:var(--dim)}
+  details summary{cursor:pointer;color:var(--dim)}
+  details[open] summary{color:var(--text)}
+  .kv{margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .kv div{padding:2px 0;border-bottom:1px dashed var(--line)}
+  .kv b{color:var(--text);font-weight:600}
+  .empty,.error{color:var(--dim);text-align:center;padding:60px 0}
+  .error{color:#C2321F}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login" class="login">
+    <h1>Intilaq applications</h1>
+    <p class="sub">Enter the admin password to view submissions.</p>
+    <input id="pw" type="password" placeholder="Admin password" autocomplete="current-password">
+    <button id="go">View applications</button>
+    <p id="loginErr" class="error" style="display:none;padding:12px 0 0"></p>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="bar">
+      <div>
+        <h1>Applications</h1>
+        <p class="sub">Cohort one — stored in D1.</p>
+      </div>
+      <div>
+        <span id="count" class="count"></span>
+        <button id="csv" class="secondary">Export CSV</button>
+        <button id="refresh" class="secondary">Refresh</button>
+      </div>
+    </div>
+    <div id="listing"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+var TOKEN_KEY = "intilaq-admin-token";
+var rows = [];
+
+var loginEl = document.getElementById("login");
+var appEl = document.getElementById("app");
+var pwEl = document.getElementById("pw");
+var loginErr = document.getElementById("loginErr");
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+async function load(token){
+  loginErr.style.display = "none";
+  var res;
+  try{
+    res = await fetch("/api/applications", { headers: { "Authorization": "Bearer " + token } });
+  }catch(e){
+    loginErr.textContent = "Network error."; loginErr.style.display = "block"; return;
+  }
+  if(res.status === 401){
+    loginErr.textContent = "Wrong password."; loginErr.style.display = "block";
+    sessionStorage.removeItem(TOKEN_KEY);
+    return;
+  }
+  if(!res.ok){
+    loginErr.textContent = "Error loading applications (" + res.status + ")."; loginErr.style.display = "block"; return;
+  }
+  var body = await res.json();
+  rows = body.applications || [];
+  sessionStorage.setItem(TOKEN_KEY, token);
+  loginEl.style.display = "none";
+  appEl.style.display = "block";
+  render();
+}
+
+function render(){
+  document.getElementById("count").textContent = rows.length + " application" + (rows.length===1?"":"s");
+  var out = document.getElementById("listing");
+  if(!rows.length){ out.innerHTML = '<p class="empty">No applications yet.</p>'; return; }
+  var html = '<table><thead><tr><th>#</th><th>Received</th><th>Team</th><th>Email</th><th>Details</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    var data;
+    try{ data = JSON.parse(r.data); }catch(e){ data = []; }
+    var kv = data.map(function(p){
+      return '<div><b>'+esc(p[0])+':</b> '+esc(p[1]||"—")+'</div>';
+    }).join("");
+    html += '<tr>' +
+      '<td class="id">'+r.id+'</td>' +
+      '<td>'+esc(new Date(r.created_at).toLocaleString())+'</td>' +
+      '<td>'+esc(r.team||"—")+'</td>' +
+      '<td>'+esc(r.email||"—")+'</td>' +
+      '<td><details><summary>View '+data.length+' fields</summary><div class="kv">'+kv+'</div></details></td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  out.innerHTML = html;
+}
+
+function toCSV(){
+  var fieldNames = [];
+  var seen = {};
+  rows.forEach(function(r){
+    var data; try{ data = JSON.parse(r.data); }catch(e){ data = []; }
+    data.forEach(function(p){ if(!seen[p[0]]){ seen[p[0]]=1; fieldNames.push(p[0]); } });
+  });
+  var header = ["id","received"].concat(fieldNames);
+  var lines = [header.map(csvCell).join(",")];
+  rows.forEach(function(r){
+    var data; try{ data = JSON.parse(r.data); }catch(e){ data = []; }
+    var map = {}; data.forEach(function(p){ map[p[0]] = p[1]; });
+    var line = [r.id, r.created_at].concat(fieldNames.map(function(n){ return map[n]||""; }));
+    lines.push(line.map(csvCell).join(","));
+  });
+  return lines.join("\r\n");
+}
+function csvCell(v){
+  v = String(v==null?"":v);
+  if(/[",\r\n]/.test(v)) v = '"' + v.replace(/"/g,'""') + '"';
+  return v;
+}
+
+document.getElementById("go").addEventListener("click", function(){
+  var pw = pwEl.value.trim();
+  if(!pw) return;
+  load(pw);
+});
+pwEl.addEventListener("keydown", function(e){ if(e.key === "Enter") document.getElementById("go").click(); });
+
+document.getElementById("refresh").addEventListener("click", function(){
+  var token = sessionStorage.getItem(TOKEN_KEY);
+  if(token) load(token);
+});
+
+document.getElementById("csv").addEventListener("click", function(){
+  var blob = new Blob([toCSV()], { type: "text/csv" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "intilaq-applications.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+(function(){
+  var token = sessionStorage.getItem(TOKEN_KEY);
+  if(token) load(token);
+})();
+</script>
+</body>
+</html>

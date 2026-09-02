@@ -1,0 +1,14 @@
+{
+  "name": "intilaq",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync:assets": "node scripts/sync-public.mjs",
+    "deploy": "node scripts/sync-public.mjs && wrangler deploy",
+    "preview": "wrangler dev",
+    "test": "node scripts/check-assets.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.37.0"
+  }
+}

@@ -1,11 +1,12 @@
 {
   "name": "intilaq",
+  "main": "src/index.js",
   "compatibility_date": "2026-09-02",
-  "main": "worker/index.js",
+  "workers_dev": true,
   "assets": {
-    "directory": "./",
-    "html_handling": "auto-trailing-slash",
-    "binding": "ASSETS"
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash"
   },
   "d1_databases": [
     {

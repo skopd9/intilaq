@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intilaq · The Start</title>
+<meta name="description" content="Intilaq is a competition-built incubator in Beirut. Five funded seats, twelve weeks, one measurable number per team, scored by working experts. No equity, ever.">
+<meta property="og:title" content="Intilaq · The Start">
+<meta property="og:description" content="A competition-built incubator in Beirut. Five funded seats, twelve weeks, one measurable number per team, scored by working experts. No equity, ever.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#F5F6F8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='15'%20fill='%23151B23'/%3E%3Ctext%20x='32'%20y='45'%20font-size='34'%20text-anchor='middle'%20fill='white'%20font-family='sans-serif'%20font-weight='700'%3E%D9%86%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Carlito:wght@400;700&family=Geist+Mono:wght@400..600&family=Noto+Kufi+Arabic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ tokens: committed light world ============ */
+:root{
+  --ground:#F5F6F8;
+  --panel:#FFFFFF;
+  --ink:#0A0C10;
+  --ink-2:#1C222B;
+  --body:#46505A;
+  --faint:#79838D;
+  --hair:rgba(10,12,16,.08);
+  --hair-2:rgba(10,12,16,.14);
+  --f:"Calibri Light",Calibri,Carlito,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --acc-text:#2B3440;          /* small text on light, 11.2:1 */
+  --acc:#151B23;               /* fills, large marks */
+  --acc-hi:#39434F;
+  --acc-deep:#04070B;
+  --on-acc:#FFFFFF;
+  --win:#0F9D63;               /* reserved: hit the number */
+  --win-dark:#37D399;
+  --cut:#C2321F;                /* reserved for elimination only */
+  --glass:rgba(255,255,255,.58);
+  --glass-strong:rgba(255,255,255,.78);
+  --glass-edge:rgba(255,255,255,.85);
+  --shadow-soft:0 18px 60px rgba(10,12,16,.08);
+  --shadow-lift:0 30px 80px rgba(10,12,16,.12);
+  --r-card:24px;
+  --ease:cubic-bezier(.16,1,.3,1);
+  /* dark stage tokens (the instrument panel only) */
+  --stage:#0B0F14;
+  --stage-2:#111820;
+  --stage-line:rgba(240,244,248,.13);
+  --stage-fg:#EFF3F1;
+  --stage-dim:#93A1AB;
+  --stage-acc:#E8EDF2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html{scroll-padding-top:104px}
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--f);
+  font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:rgba(21,27,35,.16)}
+a{color:inherit}
+img{max-width:100%}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px;position:relative;z-index:1}
+.mono{font-family:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace}
+.ar{font-family:"Noto Kufi Arabic",var(--f)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+
+/* ============ type ============ */
+.display{
+  font-weight:300;letter-spacing:-.021em;line-height:1.05;
+  font-size:clamp(42px,6.6vw,92px);text-wrap:balance;
+}
+.display .grad{
+  background:linear-gradient(115deg,#57616F 0%,#0A0C10 78%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+h2{
+  font-weight:300;letter-spacing:-.018em;line-height:1.08;
+  font-size:clamp(30px,4.4vw,58px);text-wrap:balance;
+}
+.eyebrow{
+  font-family:"Geist Mono",ui-monospace,monospace;
+  font-size:11.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--acc-text);
+}
+.lede{font-size:clamp(17px,1.6vw,20px);line-height:1.6;color:var(--body);max-width:36em}
+.lede strong{color:var(--ink);font-weight:600}
+
+/* ============ ambient aura ============ */
+.aura{position:fixed;inset:-20vh 0;z-index:0;pointer-events:none;overflow:hidden;contain:paint}
+.aura i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+.aura .a1{width:52vw;height:52vw;left:-8vw;top:-6vh;background:radial-gradient(circle at 40% 40%,rgba(118,134,152,.34),transparent 65%);animation:drift1 26s ease-in-out infinite alternate}
+.aura .a2{width:44vw;height:44vw;right:-6vw;top:24vh;background:radial-gradient(circle at 50% 50%,rgba(150,168,186,.24),transparent 65%);animation:drift2 32s ease-in-out infinite alternate}
+.aura .a3{width:40vw;height:40vw;left:22vw;bottom:-18vh;background:radial-gradient(circle at 50% 50%,rgba(148,160,175,.18),transparent 62%);animation:drift3 38s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate3d(9vw,7vh,0) scale(1.12)}}
+@keyframes drift2{to{transform:translate3d(-8vw,-6vh,0) scale(1.08)}}
+@keyframes drift3{to{transform:translate3d(6vw,-8vh,0) scale(1.15)}}
+
+/* ============ progress hairline ============ */
+.progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:90;
+  background:linear-gradient(90deg,var(--acc-hi),var(--acc-deep))}
+
+/* ============ nav capsule ============ */
+.nav{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:80;
+  display:flex;align-items:center;gap:26px;
+  padding:10px 12px 10px 22px;border-radius:999px;
+  background:var(--glass);backdrop-filter:blur(26px) saturate(1.7);-webkit-backdrop-filter:blur(26px) saturate(1.7);
+  box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.06),0 14px 44px rgba(10,12,16,.10);
+  white-space:nowrap;
+}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand .mark-ar{font-family:"Noto Kufi Arabic",sans-serif;font-weight:700;font-size:21px;line-height:1;color:var(--acc-text)}
+.brand .mark-lat{font-weight:700;font-size:14.5px;letter-spacing:.14em;text-transform:uppercase}
+.nav-links{display:flex;gap:22px}
+.nav-links a{
+  font-family:"Geist Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--body);text-decoration:none;padding:6px 2px;
+  transition:color .25s var(--ease);
+}
+.nav-links a:hover,.nav-links a.on{color:var(--ink)}
+.nav-links a.on{box-shadow:0 2px 0 -1px var(--acc)}
+.btn{
+  --mx:50%;--my:50%;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  position:relative;isolation:isolate;overflow:hidden;border:none;cursor:pointer;
+  border-radius:999px;text-decoration:none;
+  font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;padding:12px 22px;white-space:nowrap;
+  backdrop-filter:blur(16px) saturate(1.9) brightness(1.03);
+  -webkit-backdrop-filter:blur(16px) saturate(1.9) brightness(1.03);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease),filter .5s var(--ease);
+}
+/* refractive tint body */
+.btn::before{content:"";position:absolute;inset:0;z-index:-2;border-radius:inherit;background:var(--lg-tint)}
+/* specular that follows the pointer */
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;opacity:0;
+  background:radial-gradient(130px circle at var(--mx) var(--my),var(--lg-spec),transparent 62%);
+  transition:opacity .45s var(--ease);
+}
+.btn:hover::after{opacity:1}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.985);transition-duration:.12s}
+.btn-big{font-size:13px;padding:17px 32px}
+
+/* dark smoked glass — primary */
+.btn-acc{
+  color:var(--on-acc);
+  --lg-tint:linear-gradient(168deg,rgba(62,73,88,.94),rgba(13,18,25,.97));
+  --lg-spec:rgba(255,255,255,.28);
+  box-shadow:
+    inset 0 1.4px 0 rgba(255,255,255,.34),
+    inset 1.6px 0 0 -.6px rgba(255,255,255,.16),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.12),
+    inset 0 -1.6px 1px -1px rgba(255,255,255,.20),
+    0 10px 26px rgba(10,14,20,.32),0 2px 6px rgba(10,14,20,.22);
+}
+.btn-acc:hover{box-shadow:
+    inset 0 1.4px 0 rgba(255,255,255,.42),
+    inset 1.6px 0 0 -.6px rgba(255,255,255,.20),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.15),
+    inset 0 -1.6px 1px -1px rgba(255,255,255,.26),
+    0 18px 40px rgba(10,14,20,.38),0 3px 8px rgba(10,14,20,.24)}
+
+/* clear glass — secondary */
+.btn-glass{
+  color:var(--ink);
+  --lg-tint:linear-gradient(168deg,rgba(255,255,255,.74),rgba(255,255,255,.40));
+  --lg-spec:rgba(255,255,255,.95);
+  box-shadow:
+    inset 0 1.4px 0 rgba(255,255,255,.98),
+    inset 1.6px 0 0 -.6px rgba(255,255,255,.62),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.52),
+    inset 0 -1.4px 1px -1px rgba(255,255,255,.72),
+    0 0 0 1px rgba(10,12,16,.08),0 8px 22px rgba(10,12,16,.07);
+}
+.btn-glass:hover{box-shadow:
+    inset 0 1.4px 0 rgba(255,255,255,1),
+    inset 1.6px 0 0 -.6px rgba(255,255,255,.7),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.6),
+    inset 0 -1.4px 1px -1px rgba(255,255,255,.8),
+    0 0 0 1px rgba(10,12,16,.12),0 16px 34px rgba(10,12,16,.11)}
+
+/* bright glass on the dark apply band */
+.btn-ink{
+  color:#0B0F14;
+  --lg-tint:linear-gradient(168deg,rgba(255,255,255,.95),rgba(226,232,239,.82));
+  --lg-spec:rgba(255,255,255,1);
+  box-shadow:
+    inset 0 1.4px 0 rgba(255,255,255,1),
+    inset 1.6px 0 0 -.6px rgba(255,255,255,.7),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.55),
+    inset 0 -1.6px 1px -1px rgba(255,255,255,.75),
+    0 12px 30px rgba(0,0,0,.34),0 2px 6px rgba(0,0,0,.24);
+}
+.btn-ink:hover{box-shadow:
+    inset 0 1.4px 0 rgba(255,255,255,1),
+    inset 1.6px 0 0 -.6px rgba(255,255,255,.8),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.65),
+    inset 0 -1.6px 1px -1px rgba(255,255,255,.85),
+    0 20px 44px rgba(0,0,0,.4),0 3px 8px rgba(0,0,0,.26)}
+
+/* genuine backdrop refraction where the engine supports it */
+@supports (backdrop-filter:url(#lg-warp)){
+  .btn{backdrop-filter:blur(13px) saturate(1.9) brightness(1.03) url(#lg-warp)}
+}
+@media(max-width:880px){.nav-links{display:none}.nav{gap:16px;left:16px;right:16px;transform:none;justify-content:space-between}}
+
+/* ============ hero ============ */
+.hero{position:relative;z-index:1;padding:190px 0 90px}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:12px}
+.hero h1{margin-top:22px}
+.hero .lede{margin-top:30px}
+.cta-row{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap;align-items:center}
+.status{
+  display:inline-flex;align-items:center;gap:12px;margin-top:34px;
+  padding:11px 20px;border-radius:999px;
+  background:var(--glass);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);
+  box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.07),0 10px 28px rgba(10,12,16,.07);
+  font-family:"Geist Mono",ui-monospace,monospace;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--body);
+  flex-wrap:wrap;
+}
+.status .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px rgba(21,27,35,.15);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(21,27,35,.05)}}
+.status b{color:var(--acc-text);font-weight:600}
+
+/* intro load sequence */
+.rise{opacity:0;transform:translateY(26px);filter:blur(8px);
+  animation:rise 1s var(--ease) forwards}
+@keyframes rise{to{opacity:1;transform:none;filter:blur(0)}}
+.d1{animation-delay:.05s}.d2{animation-delay:.16s}.d3{animation-delay:.3s}.d4{animation-delay:.44s}.d5{animation-delay:.58s}
+
+/* stat strip */
+.stats{
+  margin-top:74px;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  border-radius:var(--r-card);overflow:hidden;
+  background:rgba(10,12,16,.07);
+  box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.06),var(--shadow-soft);
+}
+.stats>div{background:var(--glass-strong);backdrop-filter:blur(22px) saturate(1.6);-webkit-backdrop-filter:blur(22px) saturate(1.6);padding:30px 26px 28px}
+.stats .n{font-weight:400;letter-spacing:-.03em;font-size:clamp(28px,3vw,42px);font-variant-numeric:tabular-nums}
+.stats .n em{font-style:normal;color:var(--acc-text)}
+.stats .l{margin-top:6px;font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+@media(max-width:820px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* ============ sections ============ */
+.sec{position:relative;z-index:1;padding:clamp(90px,11vw,150px) 0}
+.sec-head{max-width:820px}
+.sec-head h2{margin-top:16px}
+.sec-head .lede{margin-top:22px}
+.hairline{border:none;border-top:1px solid var(--hair);margin:0}
+
+/* scroll reveal */
+.rv{opacity:0;transform:translateY(30px);filter:blur(6px);
+  transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+.rv.in{opacity:1;transform:none;filter:blur(0)}
+.rv-stagger>*{opacity:0;transform:translateY(26px);filter:blur(6px);
+  transition:opacity .85s var(--ease),transform .85s var(--ease),filter .85s var(--ease)}
+.rv-stagger.in>*{opacity:1;transform:none;filter:blur(0)}
+.rv-stagger.in>*:nth-child(1){transition-delay:.03s}
+.rv-stagger.in>*:nth-child(2){transition-delay:.11s}
+.rv-stagger.in>*:nth-child(3){transition-delay:.19s}
+.rv-stagger.in>*:nth-child(4){transition-delay:.27s}
+.rv-stagger.in>*:nth-child(5){transition-delay:.35s}
+.rv-stagger.in>*:nth-child(6){transition-delay:.43s}
+
+/* glass card */
+.card{
+  border-radius:var(--r-card);padding:30px 28px 32px;position:relative;
+  background:var(--glass-strong);backdrop-filter:blur(24px) saturate(1.65);-webkit-backdrop-filter:blur(24px) saturate(1.65);
+  box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.06),var(--shadow-soft);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease);
+}
+.card h3{font-size:20px;font-weight:600;letter-spacing:-.015em;line-height:1.2;margin-top:14px}
+.card p{margin-top:10px;font-size:15px;line-height:1.6;color:var(--body)}
+.card .k{font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--acc-text)}
+
+/* format steps */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:52px}
+@media(max-width:1020px){
+  .steps{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 4px 22px;margin:52px -28px 0;padding-left:28px;padding-right:28px;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps .card{min-width:246px;scroll-snap-align:start}
+}
+.steps .card:hover{transform:translateY(-6px);box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.08),var(--shadow-lift)}
+
+/* ============ gauntlet (pinned instrument stage) ============ */
+.gauntlet{position:relative;z-index:1;height:360vh}
+.g-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:0 20px}
+.g-stage{
+  width:min(1180px,96vw);border-radius:28px;padding:clamp(22px,3vw,44px);
+  background:linear-gradient(180deg,var(--stage-2),var(--stage));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(10,12,16,.5),0 50px 120px rgba(10,12,16,.35);
+  color:var(--stage-fg);
+}
+.g-head{display:flex;justify-content:space-between;align-items:baseline;gap:18px;flex-wrap:wrap;
+  padding-bottom:18px;border-bottom:1px solid var(--stage-line)}
+.g-title{font-family:"Geist Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--stage-dim)}
+.g-read{display:flex;gap:clamp(18px,3.5vw,46px);font-variant-numeric:tabular-nums}
+.g-read .cell .v{font-weight:400;letter-spacing:-.02em;font-size:clamp(19px,2.4vw,30px)}
+.g-read .cell .v.acc{color:var(--stage-acc)}
+.g-read .cell .t{font-family:"Geist Mono",ui-monospace,monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--stage-dim);margin-top:3px}
+.g-rail{position:relative;margin-top:44px;padding-top:26px}
+.g-marks{position:absolute;top:0;bottom:0;left:64px;right:150px;pointer-events:none}
+.g-mark{position:absolute;top:26px;bottom:0;width:1px;background:var(--stage-line)}
+.g-mark b{position:absolute;top:-22px;left:-12px;font-family:"Geist Mono",ui-monospace,monospace;font-size:9.5px;font-weight:500;color:var(--stage-dim);letter-spacing:.08em}
+.g-row{display:grid;grid-template-columns:52px 1fr 138px;align-items:center;gap:12px;height:44px}
+.g-id{font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;color:var(--stage-dim)}
+.g-track{position:relative;height:10px;border-radius:99px;background:rgba(240,244,248,.07)}
+.g-bar{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:99px;
+  background:linear-gradient(90deg,#8593A3,#5D6A7A);transition:background .5s var(--ease)}
+.g-row.out .g-bar{background:linear-gradient(90deg,rgba(120,134,150,.55),var(--cut))}
+.g-row.win .g-bar{background:linear-gradient(90deg,#1FA974,var(--win-dark));
+  box-shadow:0 0 22px rgba(55,211,153,.45)}
+.g-bar::after{content:"";position:absolute;right:-1px;top:-4px;bottom:-4px;width:3px;border-radius:2px;background:#fff;opacity:.9}
+.g-row.out .g-bar::after{background:#FF7A66;box-shadow:0 0 10px rgba(255,122,102,.8)}
+.g-row.win .g-bar::after{background:var(--win-dark);box-shadow:0 0 14px rgba(55,211,153,.95)}
+.g-tag{font-family:"Geist Mono",ui-monospace,monospace;font-size:9.8px;letter-spacing:.08em;white-space:nowrap;
+  opacity:0;transform:translateX(-6px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.g-tag.show{opacity:1;transform:none}
+.g-tag.stop{color:#FF8A76}
+.g-tag.pass{color:var(--win-dark);font-weight:600}
+.g-tag.dim{color:var(--stage-dim)}
+.g-tag em{font-style:normal}
+.g-cap{margin-top:30px;padding-top:18px;border-top:1px solid var(--stage-line);
+  font-size:clamp(14.5px,1.5vw,17px);color:#C9D3DA;min-height:3.2em;max-width:46em}
+.g-cap strong{color:var(--stage-fg)}
+@media(max-width:760px){
+  .g-row{grid-template-columns:34px 1fr 96px;height:auto;min-height:48px;gap:8px}
+  .g-marks{left:42px;right:104px}
+  .g-tag{font-size:8.8px;white-space:normal;line-height:1.6}
+  .g-tag em{display:block}
+  .g-read .cell:nth-child(3){display:none}
+}
+/* static fallback state */
+.gauntlet.static{height:auto;padding:clamp(60px,8vw,100px) 0}
+.gauntlet.static .g-sticky{position:static;height:auto}
+
+/* ============ verticals ============ */
+.verts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:52px}
+@media(max-width:900px){.verts{grid-template-columns:1fr}}
+.vert{padding:34px 30px 36px;transform-style:preserve-3d}
+.vert h3{font-size:24px;margin-top:56px}
+.vert .ex{margin-top:12px}
+.vert .glare{content:"";position:absolute;inset:0;border-radius:var(--r-card);pointer-events:none;
+  background:radial-gradient(420px circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.5),transparent 45%);
+  opacity:0;transition:opacity .4s var(--ease)}
+.vert:hover .glare{opacity:1}
+.open-seat{
+  margin-top:14px;padding:38px 34px;display:grid;grid-template-columns:1.1fr 1.6fr;gap:34px;align-items:center;
+  background:linear-gradient(120deg,rgba(92,103,118,.16),rgba(255,255,255,.75) 55%);
+}
+.open-seat h3{font-size:26px;margin-top:12px}
+.open-seat p{font-size:16px}
+@media(max-width:900px){.open-seat{grid-template-columns:1fr;gap:14px}}
+.invariant{
+  margin-top:14px;border-radius:var(--r-card);padding:30px 34px;
+  background:var(--stage);color:var(--stage-fg);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 30px 70px rgba(10,12,16,.25);
+  display:flex;gap:26px;align-items:baseline;flex-wrap:wrap;
+}
+.invariant .k{font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--stage-acc);white-space:nowrap}
+.invariant p{font-size:clamp(16px,1.7vw,19px);line-height:1.55;color:#CBD5DC;max-width:44em}
+.invariant p strong{color:var(--stage-fg)}
+
+/* ============ standard ============ */
+.rules{margin-top:52px;border-top:1px solid var(--hair)}
+.rule{display:grid;grid-template-columns:250px 1fr;gap:30px;padding:34px 0;border-bottom:1px solid var(--hair);align-items:baseline}
+.rule h3{font-size:21px;font-weight:600;letter-spacing:-.015em}
+.rule p{color:var(--body);font-size:16.5px;max-width:40em}
+.rule p strong{color:var(--ink);font-weight:600}
+@media(max-width:760px){.rule{grid-template-columns:1fr;gap:10px}}
+.promises{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+@media(max-width:900px){.promises{grid-template-columns:1fr}}
+.promises .card h3{margin-top:0;color:var(--acc-text)}
+
+/* ============ money ============ */
+.ladder{display:flex;align-items:stretch;gap:10px;margin-top:52px;flex-wrap:wrap}
+.chip{
+  flex:1;min-width:150px;border-radius:20px;padding:22px 20px;
+  background:var(--glass-strong);backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6);
+  box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.06),var(--shadow-soft);
+}
+.chip .v{font-weight:400;letter-spacing:-.02em;font-size:clamp(21px,2.2vw,29px);font-variant-numeric:tabular-nums}
+.chip .t{margin-top:4px;font-family:"Geist Mono",ui-monospace,monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.chip.win{background:linear-gradient(168deg,#17A874,#0B7A52);box-shadow:inset 0 1.4px 0 rgba(255,255,255,.42),0 18px 44px rgba(11,122,82,.32)}
+.chip.win .v{color:#FFFFFF}
+.chip.win .t{color:rgba(255,255,255,.78)}
+.money-note{margin-top:26px;font-size:16.5px;color:var(--body);max-width:44em}
+.money-note strong{color:var(--ink)}
+
+/* ============ routes ============ */
+.routes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:52px}
+@media(max-width:900px){.routes{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.routes{grid-template-columns:1fr}}
+.route .rn{font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.route .rv2{font-weight:400;letter-spacing:-.02em;font-size:clamp(20px,2vw,26px);margin-top:10px;color:var(--acc-text);font-variant-numeric:tabular-nums}
+.route .rd{margin-top:8px;font-size:13.5px;line-height:1.5;color:var(--body)}
+
+/* ============ partners ============ */
+.partners-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:52px}
+@media(max-width:1000px){.partners-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.partners-grid{grid-template-columns:1fr}}
+.partner-note{margin-top:26px;font-size:16px;color:var(--body);max-width:46em}
+.partner-note a{color:var(--acc-text);font-weight:600}
+
+/* ============ dates ============ */
+.dates{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:52px}
+@media(max-width:820px){.dates{grid-template-columns:repeat(2,1fr)}}
+.date .d{font-family:"Geist Mono",ui-monospace,monospace;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc-text);padding-bottom:10px;border-bottom:1px solid var(--hair-2)}
+.date .e{font-size:18px;font-weight:600;margin-top:12px;letter-spacing:-.01em}
+
+/* ============ apply ============ */
+.apply{
+  position:relative;z-index:1;border-radius:32px;overflow:hidden;
+  margin:0 auto;max-width:1180px;width:calc(100% - 40px);
+  background:
+    radial-gradient(900px 420px at 18% 0%,rgba(126,140,158,.55),transparent 60%),
+    linear-gradient(160deg,#3E4855,#161D26 62%,#080B10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 40px 100px rgba(8,11,16,.40);
+  padding:clamp(70px,9vw,120px) clamp(26px,6vw,90px);
+  text-align:center;color:var(--on-acc);
+}
+.apply h2{font-size:clamp(38px,5.6vw,76px);letter-spacing:-.035em}
+.apply .sub{margin-top:20px;font-size:clamp(16px,1.8vw,20px);color:rgba(255,255,255,.80);max-width:34em;margin-left:auto;margin-right:auto}
+.apply .cta-row{justify-content:center}
+.apply .alt{margin-top:26px;font-family:"Geist Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.66)}
+.apply .alt a{color:var(--on-acc);font-weight:600}
+
+/* ============ footer ============ */
+footer{position:relative;z-index:1;padding:70px 0 90px;color:var(--faint);font-size:14px}
+footer .mean{color:var(--acc-text);font-weight:600;font-size:15px}
+footer p+p{margin-top:10px}
+footer a{color:var(--body)}
+
+/* ============ small screens ============ */
+@media(max-width:640px){
+  .hero{padding-top:150px}
+  .rule h3{font-size:19px}
+}
+
+/* ============ reduced motion ============ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rise,.rv,.rv-stagger>*{opacity:1;transform:none;filter:none}
+}
+@media print{
+  .nav,.aura,.progress{display:none}
+  .gauntlet{height:auto}
+  .g-sticky{position:static;height:auto}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute;pointer-events:none">
+  <filter id="lg-warp" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="noise"/>
+    <feGaussianBlur in="noise" stdDeviation="1.6" result="soft"/>
+    <feDisplacementMap in="SourceGraphic" in2="soft" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="aura" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Main">
+  <a class="brand" href="#top">
+    <span class="mark-ar" dir="rtl">انطلاق</span>
+    <span class="mark-lat">Intilaq</span>
+  </a>
+  <div class="nav-links">
+    <a href="#format">Format</a>
+    <a href="#verticals">Seats</a>
+    <a href="#standard">Standard</a>
+    <a href="#partners">Partners</a>
+  </div>
+  <a class="btn btn-acc" href="apply.html">Apply</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="eyebrow rise d1"><span class="ar" dir="rtl">الانطلاق</span> · The Start · Beirut</div>
+    <h1 class="display rise d2">Built to make the region's<br><span class="grad">next real companies.</span></h1>
+    <p class="lede rise d3">Intilaq is an incubator run as a competition. <strong>Five funded seats. Twelve weeks. One measurable number per team,</strong> fixed before week one and scored by people who build, operate, and invest for a living. Clear every bar and you leave with a working system, $21,000 kept, no equity taken, and applications in front of the investors who fund what comes next.</p>
+    <div class="cta-row rise d4">
+      <a class="btn btn-acc btn-big" href="apply.html">Apply for a seat</a>
+      <a class="btn btn-glass btn-big" href="#verticals">See the five seats</a>
+    </div>
+    <div class="status rise d5" role="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="cdline">Cohort 01 · applications close in <b id="cd">42 days</b> · 12 Oct 2026, 20:00 Beirut</span>
+    </div>
+
+    <div class="stats rv-stagger" id="stats">
+      <div><div class="n"><span data-count="5">5</span> <em>seats</em></div><div class="l">Per cohort. No more.</div></div>
+      <div><div class="n"><span data-count="12">12</span> <em>weeks</em></div><div class="l">Application to measurement day</div></div>
+      <div><div class="n">$<span data-count="21000">21,000</span></div><div class="l">Per team. Paid is kept.</div></div>
+      <div><div class="n"><span data-count="0">0</span><em>%</em> equity</div><div class="l">Not now. Not later.</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= FORMAT ================= -->
+<section class="sec" id="format">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">The format</div>
+      <h2>A competition with money at every gate.</h2>
+      <p class="lede">Not a course. Not a demo day with certificates. A published bar, real cash at each checkpoint, and a field that narrows until the number is hit.</p>
+    </div>
+    <div class="steps rv-stagger">
+      <div class="card"><div class="k">01</div><h3>Apply to a seat</h3><p>Ten minutes: a form and a sixty second video. Any LAU student, or an LAU graduate from the last three years; more universities as founding members join. Teams of two or three, and one of you must be able to build the thing.</p></div>
+      <div class="card"><div class="k">02</div><h3>Five teams enter</h3><p>$1,000 lands on day one. So do lab and rig time, software licences, and the introductions to utilities and operators you cannot get on your own.</p></div>
+      <div class="card"><div class="k">03</div><h3>Clear the checkpoints</h3><p>Weeks 2, 6, and 10. The expert panel scores your evidence against the published bar. Clear it and more money lands. Miss it and your run ends there, with everything already paid.</p></div>
+      <div class="card"><div class="k">04</div><h3>Measurement day</h3><p>Week 12, in public, in front of investors and engineers. Your system hits the published number or it does not. If it does, you take $12,000.</p></div>
+      <div class="card"><div class="k">05</div><h3>Go raise</h3><p>Finishers leave with a working system, verified evidence, and applications written for the programmes that write the first real cheque.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GAUNTLET ================= -->
+<section class="gauntlet" id="gauntlet" aria-label="Twelve weeks, five teams, four gates: an animated model of one cohort">
+  <div class="g-sticky">
+    <div class="g-stage">
+      <div class="g-head">
+        <div class="g-title">Cohort model · five teams · twelve weeks</div>
+        <div class="g-read">
+          <div class="cell"><div class="v mono" id="g-week">W01</div><div class="t">Week</div></div>
+          <div class="cell"><div class="v mono acc" id="g-paid">$5,000</div><div class="t">Paid out</div></div>
+          <div class="cell"><div class="v mono" id="g-left">5 of 5</div><div class="t">Teams left</div></div>
+        </div>
+      </div>
+      <div class="g-rail">
+        <div class="g-marks" aria-hidden="true">
+          <div class="g-mark" style="left:16.6%"><b>W2</b></div>
+          <div class="g-mark" style="left:50%"><b>W6</b></div>
+          <div class="g-mark" style="left:83.3%"><b>W10</b></div>
+          <div class="g-mark" style="left:99.6%"><b>W12</b></div>
+        </div>
+        <div class="g-row" data-cut="0" data-win="1"><span class="g-id">T-01</span><div class="g-track"><div class="g-bar"></div></div><span class="g-tag pass">▲ HIT W12<em> · KEPT $21,000</em></span></div>
+        <div class="g-row" data-cut="0" data-win="0"><span class="g-id">T-02</span><div class="g-track"><div class="g-bar"></div></div><span class="g-tag dim">■ MISSED W12<em> · KEPT $9,000</em></span></div>
+        <div class="g-row" data-cut="10"><span class="g-id">T-03</span><div class="g-track"><div class="g-bar"></div></div><span class="g-tag stop">✕ CUT W10<em> · KEPT $5,500</em></span></div>
+        <div class="g-row" data-cut="6"><span class="g-id">T-04</span><div class="g-track"><div class="g-bar"></div></div><span class="g-tag stop">✕ CUT W6<em> · KEPT $2,500</em></span></div>
+        <div class="g-row" data-cut="2"><span class="g-id">T-05</span><div class="g-track"><div class="g-bar"></div></div><span class="g-tag stop">✕ CUT W2<em> · KEPT $1,000</em></span></div>
+      </div>
+      <p class="g-cap" id="g-cap"><strong>Five teams. $1,000 each on day one.</strong> The bar for every checkpoint is already published.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= VERTICALS ================= -->
+<section class="sec" id="verticals">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Five seats</div>
+      <h2>Three verticals. Two open seats.</h2>
+      <p class="lede">You apply to a seat, not to a theme. Each vertical is a territory where a measurable win changes a real industry. What exactly you build inside it is yours; the number you will be judged on is fixed with the expert panel before week one.</p>
+    </div>
+    <div class="verts rv-stagger">
+      <div class="card vert"><div class="glare"></div><div class="k">Seat 01 · Energy</div><h3>Make real infrastructure cheaper to run</h3><p class="ex">Cut what a facility spends on power and prove the saving on live load, over weeks, without slowing anything down.</p></div>
+      <div class="card vert"><div class="glare"></div><div class="k">Seat 02 · Water</div><h3>Do more with less hardware</h3><p class="ex">Find loss faster. Locate leaks with a fraction of the sensors. Cut waste by an amount a utility can verify.</p></div>
+      <div class="card vert"><div class="glare"></div><div class="k">Seat 03 · Compute</div><h3>Same work, a fraction of the power</h3><p class="ex">Run real workloads on less silicon and less energy, at the same accuracy, measured against an off-the-shelf baseline.</p></div>
+    </div>
+    <div class="card open-seat rv">
+      <div>
+        <div class="k">Seats 04 · 05 · Open</div>
+        <h3>Bring your own vertical</h3>
+      </div>
+      <p>Two of the five seats are open to any field. Health, agriculture, logistics, materials, finance: it qualifies the moment it carries a number we can measure, a test we can run, and a deadline we can hold you to.</p>
+    </div>
+    <div class="invariant rv">
+      <span class="k">The contract</span>
+      <p><strong>One number. One test. One deadline.</strong> Fixed with the expert panel before week one, published before you start, and judged exactly as written. If it cannot be measured, it cannot compete.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STANDARD ================= -->
+<section class="sec" id="standard">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">The standard</div>
+      <h2>Advancement is earned.<br>Never given.</h2>
+    </div>
+    <div class="rules rv-stagger">
+      <div class="rule"><h3>The bar is public before week one</h3><p>Every checkpoint number is published before the cohort starts and does not move after. Reviewers score evidence against it: measurements, logs, working systems. Not decks, not effort, not potential. The complete rule set ships with the application as a versioned document.</p></div>
+      <div class="rule"><h3>Judged by working experts</h3><p>Investors, operators, and engineers active in each vertical score every checkpoint. Reviewer names are published when cohort one is seated. Any reviewer can request an introduction to any team at any point, including teams that were cut. <strong>A team cut at week six with three investors asking to talk has not failed at anything.</strong></p></div>
+      <div class="rule"><h3>Nobody has to advance</h3><p>If no team clears a checkpoint, no team advances. The unclaimed money rolls into the next cohort and the bar stays exactly where it was. <strong>Winning here has to mean something, so it is allowed to mean nothing this time.</strong></p></div>
+    </div>
+    <div class="promises rv-stagger">
+      <div class="card"><h3>No equity. Ever.</h3><p>Not a share, not a warrant, not a right to invest later. You own everything you make, and applying signs nothing away.</p></div>
+      <div class="card"><h3>No mentorship you did not ask for</h3><p>We give you the number, the money, and the lab. No curriculum, no workshops, no fireside chats. Ninety minutes a week, and the rest of your time is yours.</p></div>
+      <div class="card"><h3>Getting cut costs nothing</h3><p>Money paid is money kept, equipment included. Nothing gets clawed back, and you can enter the next cohort with the same idea.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MONEY ================= -->
+<section class="sec" id="money">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">The money</div>
+      <h2>Published, staged, and kept.</h2>
+    </div>
+    <div class="ladder rv-stagger">
+      <div class="chip"><div class="v">$1,000</div><div class="t">Day one</div></div>
+      <div class="chip"><div class="v">+$1,500</div><div class="t">Clear week 2</div></div>
+      <div class="chip"><div class="v">+$3,000</div><div class="t">Clear week 6</div></div>
+      <div class="chip"><div class="v">+$3,500</div><div class="t">Clear week 10</div></div>
+      <div class="chip win"><div class="v">+$12,000</div><div class="t">Hit the number · W12</div></div>
+    </div>
+    <p class="money-note rv"><strong>$21,000 per team that clears everything. Up to $105,000 on the line each cohort.</strong> Every dollar paid stays paid at every exit, and whatever a cohort leaves unclaimed rolls into the purse of the next one.</p>
+  </div>
+</section>
+
+<!-- ================= AFTER ================= -->
+<section class="sec" id="after">
+  <div class="wrap">
+    <hr class="hairline">
+    <div class="sec-head rv" style="padding-top:clamp(70px,9vw,120px)">
+      <div class="eyebrow">After week twelve</div>
+      <h2>Then you go raise.</h2>
+      <p class="lede">Finishers leave with applications written for the programmes below, with people who have been through them. <strong>None of these cheques are ours to hand out, and none are promised.</strong> Our job is that you arrive with a working system and evidence a stranger can verify.</p>
+    </div>
+    <div class="routes rv-stagger">
+      <div class="card route"><span class="rn">Y Combinator</span><div class="rv2">$500,000</div><p class="rd">$125K for 7% + $375K uncapped · 3 months, San Francisco</p></div>
+      <div class="card route"><span class="rn">HAX</span><div class="rv2">up to $550,000</div><p class="rd">Hard tech only · part cash, part in-kind engineering</p></div>
+      <div class="card route"><span class="rn">Antler</span><div class="rv2">$250K to $500K</div><p class="rd">Pre-seed on passing investment committee</p></div>
+      <div class="card route"><span class="rn">Entrepreneur First</span><div class="rv2">up to $250,000</div><p class="rd">Backs the individual before the team</p></div>
+      <div class="card route"><span class="rn">Techstars</span><div class="rv2">~$120,000</div><p class="rd">Mentor density rather than lab access</p></div>
+      <div class="card route"><span class="rn">Creative Destruction Lab</span><div class="rv2">No equity, no fee</div><p class="rd">Nine months of objectives, and cuts</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HONESTY ================= -->
+<section class="sec" id="alumni">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Alumni</div>
+      <h2>There are none yet.</h2>
+      <p class="lede">This is cohort one. No logo wall, no testimonials, no total raised figure. Every programme you respect started at zero too. What exists today is the rule set, fixed before anyone applies: the bar is published, the money is published, and nobody takes a share of what you build. <strong>Five teams get to be the proof, and get to say they were first.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PARTNERS ================= -->
+<section class="sec" id="partners">
+  <div class="wrap">
+    <hr class="hairline">
+    <div class="sec-head rv" style="padding-top:clamp(70px,9vw,120px)">
+      <div class="eyebrow">Partners</div>
+      <h2>Built with partners who accept the rules.</h2>
+      <p class="lede">The Lebanese American University is the founding member. The remaining positions are open to institutions and companies that adopt the rule set unchanged.</p>
+    </div>
+    <div class="partners-grid rv-stagger">
+      <div class="card"><div class="k">Founding member · filled</div><h3>LAU, Beirut</h3><p>Funds part of the purse, holds a seat on the panel, and its students and recent alumni are eligible to enter.</p></div>
+      <div class="card"><div class="k">Founding member · open</div><h3>Fund a share</h3><p>Adopt the rules unchanged, fund part of the purse, take a seat on the panel. Your students and recent alumni become eligible to enter.</p></div>
+      <div class="card"><div class="k">Vertical sponsor · open</div><h3>Back a vertical</h3><p>Underwrite one published win condition and it can carry your name. You do not sit in the room that judges it.</p></div>
+      <div class="card"><div class="k">Infrastructure · open</div><h3>Lend the rig</h3><p>Telemetry, test rigs, FPGA boards, lab hours, compute. In kind rather than cash, and at this budget usually worth more.</p></div>
+    </div>
+    <p class="partner-note rv">What partners never get: equity, IP claims, votes over the panel, or exclusivity. Published on purpose. <a href="mailto:intilaq@lau.edu.lb?subject=Intilaq%20partnership">Register your interest</a>.</p>
+  </div>
+</section>
+
+<!-- ================= DATES ================= -->
+<section class="sec" id="dates">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <div class="eyebrow">Cohort one</div>
+      <h2>Four dates.</h2>
+    </div>
+    <div class="dates rv-stagger">
+      <div class="date"><div class="d">12 Oct 2026</div><div class="e">Applications close</div></div>
+      <div class="date"><div class="d">28 Oct 2026</div><div class="e">Five teams named</div></div>
+      <div class="date"><div class="d">9 Nov 2026</div><div class="e">Week one</div></div>
+      <div class="date"><div class="d">29 Jan 2027</div><div class="e">Measurement day</div></div>
+    </div>
+    <p class="money-note rv" style="margin-top:34px">The winter break sits inside the run. No gate lands during it: week 10 is scored the week everyone is back.</p>
+  </div>
+</section>
+
+<!-- ================= APPLY ================= -->
+<section class="sec" style="padding-top:20px">
+  <div class="apply rv" id="apply">
+    <h2 class="display" style="font-weight:400">We seed you.<br>You go raise.</h2>
+    <p class="sub">Ten minutes to apply. Applications close 12 October 2026, 20:00 Beirut.</p>
+    <div class="cta-row" style="margin-top:36px">
+      <a class="btn btn-ink btn-big" href="apply.html">Start an application</a>
+    </div>
+    <p class="alt">Work in the field? <a href="mailto:intilaq@lau.edu.lb?subject=Intilaq%20reviewer%20panel">Join the review panel</a></p>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <p class="mean"><span class="ar" dir="rtl">انطلاق</span> · intilaq · the start.</p>
+    <p>Everyone tells you to start. This hands you a number, twelve weeks, and the money to actually do it.</p>
+    <p>Founding member: the Lebanese American University, Beirut. Intilaq is being set up as an independent body, and these rules travel with it.</p>
+    <p><a href="mailto:intilaq@lau.edu.lb">intilaq@lau.edu.lb</a></p>
+    <p style="margin-top:22px"><a href="#format" style="margin-right:16px">Format</a><a href="#verticals" style="margin-right:16px">Seats</a><a href="#standard" style="margin-right:16px">Standard</a><a href="#partners" style="margin-right:16px">Partners</a><a href="#dates">Dates</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* countdown */
+  var end = new Date("2026-10-12T20:00:00+03:00").getTime();
+  var cd = document.getElementById("cd");
+  function tick(){
+    var t = end - Date.now();
+    if(t < 0){ document.getElementById("cdline").textContent = "Cohort 01 · applications closed · five teams named 28 Oct 2026"; return; }
+    cd.textContent = Math.floor(t/86400000) + " days " + (Math.floor(t/3600000) % 24) + " hours";
+  }
+  tick(); setInterval(tick, 60000);
+
+  /* progress hairline */
+  var prog = document.getElementById("progress");
+  function onProg(){
+    var h = document.documentElement.scrollHeight - innerHeight;
+    prog.style.width = (h > 0 ? (scrollY / h) * 100 : 0) + "%";
+  }
+  addEventListener("scroll", onProg, {passive:true}); onProg();
+
+  /* scroll reveals */
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, {threshold: .18, rootMargin: "0px 0px -8% 0px"});
+  document.querySelectorAll(".rv,.rv-stagger").forEach(function(el){
+    if(reduced){ el.classList.add("in"); } else { io.observe(el); }
+  });
+
+  /* count-ups */
+  function fmt(n){ return n.toLocaleString("en-US"); }
+  var cio = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var el = e.target, target = +el.dataset.count;
+      if(reduced || target === 0){ el.textContent = fmt(target); return; }
+      var t0 = performance.now(), dur = 1300;
+      (function step(now){
+        var p = Math.min((now - t0)/dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(Math.round(target * eased));
+        if(p < 1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }, {threshold:.6});
+  document.querySelectorAll("[data-count]").forEach(function(el){ cio.observe(el); });
+
+  /* scrollspy */
+  var spyLinks = [].slice.call(document.querySelectorAll(".nav-links a"));
+  var spyMap = {};
+  spyLinks.forEach(function(a){ spyMap[a.getAttribute("href").slice(1)] = a; });
+  var sio = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      var a = spyMap[e.target.id]; if(!a) return;
+      if(e.isIntersecting){ spyLinks.forEach(function(x){ x.classList.remove("on"); }); a.classList.add("on"); }
+    });
+  }, {rootMargin:"-30% 0px -55% 0px"});
+  ["format","verticals","standard","partners"].forEach(function(id){
+    var el = document.getElementById(id); if(el) sio.observe(el);
+  });
+
+  /* vertical card glare */
+  if(matchMedia("(hover:hover)").matches && !reduced){
+    document.querySelectorAll(".vert").forEach(function(c){
+      c.addEventListener("pointermove", function(ev){
+        var r = c.getBoundingClientRect();
+        c.style.setProperty("--gx", ((ev.clientX - r.left)/r.width*100) + "%");
+        c.style.setProperty("--gy", ((ev.clientY - r.top)/r.height*100) + "%");
+      });
+    });
+  }
+
+  /* ============ liquid glass: pointer-tracked specular ============ */
+  document.addEventListener("pointermove", function(e){
+    var b = e.target.closest && e.target.closest(".btn");
+    if(!b) return;
+    var r = b.getBoundingClientRect();
+    b.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+    b.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+  }, {passive:true});
+
+  /* ============ gauntlet ============ */
+  var g = document.getElementById("gauntlet");
+  var small = matchMedia("(max-width:760px)").matches;
+  var rows = [].slice.call(g.querySelectorAll(".g-row"));
+  var wEl = document.getElementById("g-week"),
+      pEl = document.getElementById("g-paid"),
+      lEl = document.getElementById("g-left"),
+      cap = document.getElementById("g-cap");
+  var caps = [
+    [0.00, "<strong>Five teams. $1,000 each on day one.</strong> The bar for every checkpoint is already published."],
+    [0.16, "<strong>Week 2: the first gate.</strong> Clear the bar and $1,500 more lands. Miss it and your run ends, with everything paid staying paid."],
+    [0.45, "<strong>Weeks 6 and 10: the field narrows.</strong> Survivors bank $3,000, then $3,500. The bar does not move for anyone."],
+    [0.78, "<strong>Week 12: measurement day, in public.</strong> One team hit the number and took $12,000. Across the cohort: $21,000 + $9,000 + $5,500 + $2,500 + $1,000 = <strong>$39,000 paid</strong>, and every dollar of it stays paid."]
+  ];
+  var capIdx = -1;
+  function setFrame(p){
+    var wk = p * 12; // 0..12
+    wEl.textContent = "W" + String(Math.max(1, Math.min(12, Math.ceil(wk)))).padStart(2, "0");
+    var paid = 5000;
+    if(wk >= 2)  paid += 6000;   // 4 survivors x 1500
+    if(wk >= 6)  paid += 9000;   // 3 x 3000
+    if(wk >= 10) paid += 7000;   // 2 x 3500
+    if(wk >= 11.85) paid += 12000; // winner
+    pEl.textContent = "$" + fmt(paid);
+    var left = 5; if(wk >= 2) left = 4; if(wk >= 6) left = 3; if(wk >= 10) left = 2;
+    lEl.textContent = (wk >= 11.85 ? "2" : String(left)) + " of 5";
+    rows.forEach(function(row){
+      var cut = +row.dataset.cut; // 0 = no cut
+      var limit = cut || 12;
+      var w = Math.min(wk, limit) / 12 * 100;
+      row.querySelector(".g-bar").style.width = w + "%";
+      var tag = row.querySelector(".g-tag");
+      if(cut){
+        row.classList.toggle("out", wk >= cut);
+        tag.classList.toggle("show", wk >= cut + .35);
+      } else {
+        var done = wk >= 11.85;
+        tag.classList.toggle("show", done);
+        if(row.dataset.win === "1") row.classList.toggle("win", done);
+      }
+    });
+    for(var i = caps.length - 1; i >= 0; i--){
+      if(p >= caps[i][0]){ if(capIdx !== i){ capIdx = i; cap.innerHTML = caps[i][1]; } break; }
+    }
+  }
+  var ticking = false;
+  function onScroll(){
+    if(g.classList.contains("static")) return;
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      ticking = false;
+      var rect = g.getBoundingClientRect();
+      var total = g.offsetHeight - innerHeight;
+      if(total <= 0){ setFrame(1); return; }
+      var p = Math.min(Math.max(-rect.top / total, 0), 1);
+      setFrame(p);
+    });
+  }
+  function initG(){
+    var small = matchMedia("(max-width:760px)").matches;
+    if(reduced || small){
+      g.classList.add("static");
+      setFrame(1);
+    } else {
+      g.classList.remove("static");
+      onScroll();
+    }
+  }
+  addEventListener("scroll", onScroll, {passive:true});
+  addEventListener("resize", initG);
+  initG();
+  /* debug: force a frame with #p=0.5 */
+  var m = (location.hash + location.search).match(/p=([\d.]+)/);
+  if(m){ g.classList.add("static"); setFrame(Math.min(Math.max(+m[1],0),1)); }
+})();
+</script>
+</body>
+</html>

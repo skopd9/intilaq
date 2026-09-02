@@ -3,5 +3,9 @@
 .wrangler
 node_modules
 *.md
-worker
+src
+scripts
+package.json
+package-lock.json
 wrangler.jsonc
+wrangler.toml
