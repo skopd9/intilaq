@@ -1,0 +1,678 @@
+<title>Intilaq · Cohort One Application</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Carlito:wght@400;700&family=Geist+Mono:wght@400..600&family=Noto+Kufi+Arabic:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --f:"Calibri Light",Calibri,Carlito,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --ground:#F5F6F8; --panel:#FFFFFF;
+  --ink:#0A0C10; --body:#46505A; --faint:#79838D;
+  --hair:rgba(10,12,16,.08); --hair-2:rgba(10,12,16,.14);
+  --acc-text:#2B3440; --acc:#151B23; --acc-hi:#39434F; --acc-deep:#04070B; --on-acc:#FFFFFF;
+  --win:#0F9D63; --win-dark:#37D399; --cut:#C2321F;
+  --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.78); --glass-edge:rgba(255,255,255,.85);
+  --shadow-soft:0 18px 60px rgba(10,12,16,.08);
+  --r-card:24px; --ease:cubic-bezier(.16,1,.3,1);
+  --stage:#0B0F14; --stage-2:#111820; --stage-fg:#EFF3F1; --stage-dim:#93A1AB;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--f);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.mono{font-family:"Geist Mono",ui-monospace,"SF Mono",Menlo,monospace}
+.ar{font-family:"Noto Kufi Arabic",var(--f)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+::selection{background:rgba(21,27,35,.16)}
+
+/* ambient */
+.aura{position:fixed;inset:-20vh 0;z-index:0;pointer-events:none;overflow:hidden;contain:paint}
+.aura i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55}
+.aura .a1{width:52vw;height:52vw;left:-8vw;top:-6vh;background:radial-gradient(circle at 40% 40%,rgba(118,134,152,.34),transparent 65%);animation:d1 26s ease-in-out infinite alternate}
+.aura .a2{width:44vw;height:44vw;right:-6vw;top:24vh;background:radial-gradient(circle at 50% 50%,rgba(150,168,186,.24),transparent 65%);animation:d2 32s ease-in-out infinite alternate}
+@keyframes d1{to{transform:translate3d(9vw,7vh,0) scale(1.12)}}
+@keyframes d2{to{transform:translate3d(-8vw,-6vh,0) scale(1.08)}}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 26px;position:relative;z-index:1}
+
+/* ============ liquid glass buttons ============ */
+.btn{
+  --mx:50%;--my:50%;
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  position:relative;isolation:isolate;overflow:hidden;border:none;cursor:pointer;
+  border-radius:999px;text-decoration:none;
+  font-family:"Geist Mono",ui-monospace,monospace;font-size:12px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;padding:13px 24px;white-space:nowrap;
+  backdrop-filter:blur(16px) saturate(1.9) brightness(1.03);
+  -webkit-backdrop-filter:blur(16px) saturate(1.9) brightness(1.03);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease),opacity .3s;
+}
+.btn::before{content:"";position:absolute;inset:0;z-index:-2;border-radius:inherit;background:var(--lg-tint)}
+.btn::after{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;opacity:0;
+  background:radial-gradient(130px circle at var(--mx) var(--my),var(--lg-spec),transparent 62%);
+  transition:opacity .45s var(--ease)}
+.btn:hover::after{opacity:1}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.985);transition-duration:.12s}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.btn-big{font-size:13px;padding:17px 32px}
+.btn-acc{color:var(--on-acc);
+  --lg-tint:linear-gradient(168deg,rgba(62,73,88,.94),rgba(13,18,25,.97));--lg-spec:rgba(255,255,255,.28);
+  box-shadow:inset 0 1.4px 0 rgba(255,255,255,.34),inset 1.6px 0 0 -.6px rgba(255,255,255,.16),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.12),inset 0 -1.6px 1px -1px rgba(255,255,255,.20),
+    0 10px 26px rgba(10,14,20,.32),0 2px 6px rgba(10,14,20,.22)}
+.btn-acc:hover{box-shadow:inset 0 1.4px 0 rgba(255,255,255,.42),inset 1.6px 0 0 -.6px rgba(255,255,255,.20),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.15),inset 0 -1.6px 1px -1px rgba(255,255,255,.26),
+    0 18px 40px rgba(10,14,20,.38),0 3px 8px rgba(10,14,20,.24)}
+.btn-glass{color:var(--ink);
+  --lg-tint:linear-gradient(168deg,rgba(255,255,255,.74),rgba(255,255,255,.40));--lg-spec:rgba(255,255,255,.95);
+  box-shadow:inset 0 1.4px 0 rgba(255,255,255,.98),inset 1.6px 0 0 -.6px rgba(255,255,255,.62),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.52),inset 0 -1.4px 1px -1px rgba(255,255,255,.72),
+    0 0 0 1px rgba(10,12,16,.08),0 8px 22px rgba(10,12,16,.07)}
+.btn-glass:hover{box-shadow:inset 0 1.4px 0 rgba(255,255,255,1),inset 1.6px 0 0 -.6px rgba(255,255,255,.7),
+    inset -1.6px 0 0 -.6px rgba(255,255,255,.6),inset 0 -1.4px 1px -1px rgba(255,255,255,.8),
+    0 0 0 1px rgba(10,12,16,.12),0 16px 34px rgba(10,12,16,.11)}
+.btn-win{color:#fff;--lg-tint:linear-gradient(168deg,#1CB27C,#0A7A52);--lg-spec:rgba(255,255,255,.4);
+  box-shadow:inset 0 1.4px 0 rgba(255,255,255,.4),0 12px 30px rgba(11,122,82,.34)}
+@supports (backdrop-filter:url(#lg-warp)){
+  .btn{backdrop-filter:blur(13px) saturate(1.9) brightness(1.03) url(#lg-warp)}
+}
+
+/* ============ header ============ */
+.top{position:sticky;top:0;z-index:60;padding:16px 0;
+  background:rgba(245,246,248,.82);backdrop-filter:blur(22px) saturate(1.7);-webkit-backdrop-filter:blur(22px) saturate(1.7);
+  border-bottom:1px solid var(--hair)}
+.top-in{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand .a{font-family:"Noto Kufi Arabic",sans-serif;font-weight:700;font-size:21px;line-height:1;color:var(--acc-text)}
+.brand .l{font-weight:700;font-size:14.5px;letter-spacing:.14em;text-transform:uppercase}
+.top .meta{margin-left:auto;display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--faint)}
+.top .meta b{color:var(--acc-text);font-weight:600}
+.saved{color:var(--win);font-weight:600;opacity:0;transition:opacity .4s}
+.saved.on{opacity:1}
+
+/* progress */
+.pbar{height:2px;background:var(--hair);position:relative;overflow:hidden}
+.pbar i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--acc-hi),var(--acc-deep));transition:width .5s var(--ease)}
+
+/* ============ layout ============ */
+.head{padding:56px 0 34px}
+.eyebrow{font-family:"Geist Mono",ui-monospace,monospace;font-size:11.5px;font-weight:500;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--acc-text)}
+h1{font-weight:300;letter-spacing:-.021em;line-height:1.05;font-size:clamp(36px,5.4vw,66px);margin-top:16px}
+h1 .g{background:linear-gradient(115deg,#57616F 0%,#0A0C10 78%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{margin-top:20px;font-size:clamp(16px,1.5vw,19px);color:var(--body);max-width:40em}
+.lede strong{color:var(--ink);font-weight:700}
+
+.cols{display:grid;grid-template-columns:230px 1fr;gap:44px;padding-bottom:90px;align-items:start}
+@media(max-width:920px){.cols{grid-template-columns:1fr;gap:22px}}
+
+/* step rail */
+.rail{position:sticky;top:104px}
+@media(max-width:920px){.rail{position:static}}
+.rail ol{list-style:none;display:flex;flex-direction:column;gap:2px}
+@media(max-width:920px){.rail ol{flex-direction:row;overflow-x:auto;gap:8px;padding-bottom:6px}}
+.rail li{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;
+  font-size:14.5px;color:var(--faint);cursor:pointer;white-space:nowrap;transition:background .25s,color .25s}
+.rail li:hover{background:rgba(10,12,16,.04);color:var(--body)}
+.rail li[aria-current="true"]{background:var(--panel);color:var(--ink);font-weight:700;
+  box-shadow:0 0 0 1px var(--hair),0 6px 18px rgba(10,12,16,.06)}
+.rail li .n{width:22px;height:22px;flex:none;border-radius:50%;display:grid;place-items:center;
+  font-family:"Geist Mono",monospace;font-size:9.5px;background:rgba(10,12,16,.07);color:var(--faint)}
+.rail li[aria-current="true"] .n{background:var(--acc);color:#fff}
+.rail li.done .n{background:var(--win);color:#fff}
+.rail li.done .n::after{content:"✓"}
+.rail li.done .n span{display:none}
+
+/* card */
+.card{border-radius:var(--r-card);padding:clamp(26px,3.4vw,44px);
+  background:var(--glass-strong);backdrop-filter:blur(24px) saturate(1.65);-webkit-backdrop-filter:blur(24px) saturate(1.65);
+  box-shadow:inset 0 1px 0 var(--glass-edge),0 0 0 1px rgba(10,12,16,.06),var(--shadow-soft)}
+.step{display:none}
+.step.on{display:block;animation:in .5s var(--ease) both}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.step h2{font-weight:300;letter-spacing:-.018em;line-height:1.1;font-size:clamp(26px,3.2vw,40px)}
+.step .sub{margin-top:12px;color:var(--body);font-size:16px;max-width:44em}
+.step .sub strong{color:var(--ink);font-weight:700}
+
+/* fields */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:30px}
+@media(max-width:680px){.grid{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:8px}
+.f.full{grid-column:1/-1}
+.f label{font-family:"Geist Mono",ui-monospace,monospace;font-size:10.5px;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--acc-text);display:flex;gap:8px;align-items:baseline}
+.f label .opt{color:var(--faint);letter-spacing:.1em}
+.f .hint{font-family:var(--f);font-size:13.5px;letter-spacing:0;text-transform:none;color:var(--faint);line-height:1.45}
+input,textarea,select{
+  font-family:var(--f);font-size:16px;color:var(--ink);line-height:1.5;
+  background:rgba(255,255,255,.72);border:none;border-radius:14px;padding:13px 15px;width:100%;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 1px var(--hair);
+  transition:box-shadow .3s var(--ease),background .3s}
+textarea{min-height:104px;resize:vertical}
+select{appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%2346505A' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;padding-right:38px}
+input:focus,textarea:focus,select:focus{outline:none;background:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 2px var(--acc),0 8px 22px rgba(10,12,16,.08)}
+.f.bad input,.f.bad textarea,.f.bad select{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 0 0 2px var(--cut)}
+.f .err{font-family:var(--f);font-size:13px;color:var(--cut);letter-spacing:0;text-transform:none;display:none}
+.f.bad .err{display:block}
+.count{font-family:"Geist Mono",monospace;font-size:10px;color:var(--faint);text-align:right;letter-spacing:.06em}
+.count.over{color:var(--cut)}
+
+/* seat picker */
+.seats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+@media(max-width:680px){.seats{grid-template-columns:1fr}}
+.seat{position:relative;border-radius:18px;padding:20px 20px 22px;cursor:pointer;
+  background:rgba(255,255,255,.6);box-shadow:0 0 0 1px var(--hair);transition:box-shadow .3s var(--ease),transform .3s var(--ease),background .3s}
+.seat:hover{transform:translateY(-2px);background:rgba(255,255,255,.85)}
+.seat input{position:absolute;opacity:0;pointer-events:none}
+.seat .k{font-family:"Geist Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.seat h3{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-top:9px}
+.seat p{font-size:14px;color:var(--body);margin-top:7px;line-height:1.5}
+.seat:has(input:checked){background:#fff;box-shadow:0 0 0 2px var(--acc),0 14px 34px rgba(10,12,16,.10)}
+.seat:has(input:checked) .k{color:var(--acc-text)}
+
+/* the number builder */
+.builder{margin-top:26px;border-radius:20px;padding:26px 24px;background:linear-gradient(180deg,var(--stage-2),var(--stage));
+  color:var(--stage-fg);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 26px 60px rgba(10,12,16,.24)}
+.builder .k{font-family:"Geist Mono",monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--stage-dim)}
+.builder .sent{margin-top:14px;font-size:clamp(17px,2vw,22px);line-height:1.5}
+.builder .sent u{text-decoration:none;color:var(--win-dark);font-weight:700;
+  border-bottom:1.5px dashed rgba(55,211,153,.5);padding-bottom:1px}
+.builder .sent u.empty{color:var(--stage-dim);border-bottom-color:rgba(147,161,171,.4)}
+
+/* nav */
+.nav-row{display:flex;gap:12px;margin-top:34px;align-items:center;flex-wrap:wrap}
+.nav-row .spacer{flex:1}
+.stepmark{font-family:"Geist Mono",monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+
+/* review */
+.rev{margin-top:26px;border-radius:18px;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
+.rev .g{display:grid;grid-template-columns:210px 1fr;gap:1px;background:var(--hair)}
+@media(max-width:680px){.rev .g{grid-template-columns:1fr}}
+.rev .g>div{background:rgba(255,255,255,.86);padding:13px 16px;font-size:15px}
+.rev .g>div.k{font-family:"Geist Mono",monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);display:flex;align-items:center}
+.rev .g>div.v{white-space:pre-wrap;word-break:break-word}
+.rev .g>div.v.miss{color:var(--cut)}
+.outbox{margin-top:22px}
+.outbox textarea{min-height:220px;font-family:"Geist Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.6}
+
+/* done */
+.done-panel{display:none;text-align:center;padding:20px 0}
+.done-panel.on{display:block;animation:in .5s var(--ease) both}
+.done-panel .tick{width:64px;height:64px;border-radius:50%;margin:0 auto;display:grid;place-items:center;
+  background:linear-gradient(168deg,#1CB27C,#0A7A52);color:#fff;font-size:29px;
+  box-shadow:0 16px 40px rgba(11,122,82,.34)}
+.done-panel h2{margin-top:22px}
+.done-panel p{margin-top:14px;color:var(--body);max-width:38em;margin-left:auto;margin-right:auto}
+
+footer{padding:0 0 70px;color:var(--faint);font-size:14px;text-align:center}
+footer a{color:var(--body)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute;pointer-events:none">
+  <filter id="lg-warp" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="noise"/>
+    <feGaussianBlur in="noise" stdDeviation="1.6" result="soft"/>
+    <feDisplacementMap in="SourceGraphic" in2="soft" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="aura" aria-hidden="true"><i class="a1"></i><i class="a2"></i></div>
+
+<div class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top"><span class="a" dir="rtl">انطلاق</span><span class="l">Intilaq</span></a>
+    <div class="meta">
+      <span class="saved" id="saved">Draft saved</span>
+      <span>Closes <b>12 Oct 2026</b></span>
+      <span>·</span>
+      <span>About <b>10 minutes</b></span>
+    </div>
+  </div>
+</div>
+<div class="pbar"><i id="pbar"></i></div>
+
+<div class="wrap head" id="top">
+  <div class="eyebrow"><span class="ar" dir="rtl">الانطلاق</span> · Cohort one</div>
+  <h1>Apply for one of<br><span class="g">five funded seats.</span></h1>
+  <p class="lede">There is no pitch deck here. We ask what you are building, <strong>the one number you are willing to be judged on</strong>, and how a stranger could check it. Answer plainly. Reviewers are engineers, operators, and investors, and they read the evidence, not the adjectives.</p>
+</div>
+
+<div class="wrap cols">
+  <nav class="rail" aria-label="Application steps">
+    <ol id="rail"></ol>
+  </nav>
+
+  <form class="card" id="form" novalidate>
+
+    <!-- 1 TEAM -->
+    <section class="step on" data-step="0">
+      <h2>Your team</h2>
+      <p class="sub">Teams of two or three. <strong>At least one of you has to be able to build the thing.</strong> Any LAU student, plus anyone who graduated in the last three years.</p>
+      <div class="grid">
+        <div class="f full"><label for="team">Team or project name</label>
+          <input id="team" name="Team name" data-req placeholder="What you call yourselves for now"><div class="err">Needed</div></div>
+
+        <div class="f"><label for="f1n">Founder 1 · full name</label><input id="f1n" name="Founder 1 name" data-req><div class="err">Needed</div></div>
+        <div class="f"><label for="f1e">Founder 1 · email</label><input id="f1e" name="Founder 1 email" type="email" data-req data-email><div class="err">Needs a valid email</div></div>
+        <div class="f"><label for="f1r">Founder 1 · role<span class="opt">and what you build</span></label><input id="f1r" name="Founder 1 role" data-req placeholder="e.g. firmware and the test rig"><div class="err">Needed</div></div>
+        <div class="f"><label for="f1a">Founder 1 · affiliation</label>
+          <select id="f1a" name="Founder 1 affiliation" data-req>
+            <option value="">Select…</option>
+            <option>LAU · current undergraduate</option>
+            <option>LAU · current graduate student</option>
+            <option>LAU · graduated within 3 years</option>
+            <option>Other university · current student</option>
+            <option>Other university · graduated within 3 years</option>
+            <option>Neither</option>
+          </select><div class="err">Needed</div></div>
+
+        <div class="f"><label for="f2n">Founder 2 · full name</label><input id="f2n" name="Founder 2 name" data-req><div class="err">Needed</div></div>
+        <div class="f"><label for="f2e">Founder 2 · email</label><input id="f2e" name="Founder 2 email" type="email" data-req data-email><div class="err">Needs a valid email</div></div>
+        <div class="f"><label for="f2r">Founder 2 · role</label><input id="f2r" name="Founder 2 role" data-req><div class="err">Needed</div></div>
+        <div class="f"><label for="f2a">Founder 2 · affiliation</label>
+          <select id="f2a" name="Founder 2 affiliation" data-req>
+            <option value="">Select…</option>
+            <option>LAU · current undergraduate</option>
+            <option>LAU · current graduate student</option>
+            <option>LAU · graduated within 3 years</option>
+            <option>Other university · current student</option>
+            <option>Other university · graduated within 3 years</option>
+            <option>Neither</option>
+          </select><div class="err">Needed</div></div>
+
+        <div class="f"><label for="f3n">Founder 3 · name <span class="opt">optional</span></label><input id="f3n" name="Founder 3 name"></div>
+        <div class="f"><label for="f3e">Founder 3 · email <span class="opt">optional</span></label><input id="f3e" name="Founder 3 email" type="email"></div>
+        <div class="f full"><label for="builder">Who writes the code or builds the hardware?</label>
+          <span class="hint">Name the person and say what they have built before. One line is enough.</span>
+          <input id="builder" name="Who builds it" data-req><div class="err">Needed</div></div>
+        <div class="f full"><label for="links">Links <span class="opt">GitHub, LinkedIn, portfolio, paper</span></label>
+          <textarea id="links" name="Links" placeholder="One per line"></textarea></div>
+      </div>
+    </section>
+
+    <!-- 2 SEAT -->
+    <section class="step" data-step="1">
+      <h2>The seat you want</h2>
+      <p class="sub">You apply to a seat, not a theme. Three verticals are set; <strong>two seats are open to any field</strong> that carries a number we can measure.</p>
+      <div class="seats">
+        <label class="seat"><input type="radio" name="Seat" value="Seat 01 · Energy" data-req>
+          <div class="k">Seat 01</div><h3>Energy</h3><p>Make real infrastructure meaningfully cheaper or cleaner to run, proven on live load.</p></label>
+        <label class="seat"><input type="radio" name="Seat" value="Seat 02 · Water">
+          <div class="k">Seat 02</div><h3>Water</h3><p>Do more with less hardware. Find loss faster, with a fraction of the instrumentation.</p></label>
+        <label class="seat"><input type="radio" name="Seat" value="Seat 03 · Compute">
+          <div class="k">Seat 03</div><h3>Compute</h3><p>Move a real workload for materially less power, silicon, or money, at equal quality.</p></label>
+        <label class="seat"><input type="radio" name="Seat" value="Seat 04/05 · Open">
+          <div class="k">Seats 04 · 05</div><h3>Open</h3><p>Any field at all, the moment it carries a measurable number and a deadline.</p></label>
+      </div>
+      <div class="grid">
+        <div class="f full"><label for="one">In one line, what are you building?</label>
+          <span class="hint">Plain words. No category names, no adjectives.</span>
+          <input id="one" name="One line" data-req maxlength="90" data-count="90"><div class="count" data-for="one"></div><div class="err">Needed</div></div>
+        <div class="f full"><label for="what">What is it, and who is it for?</label>
+          <textarea id="what" name="What it is" data-req maxlength="900" data-count="900"></textarea><div class="count" data-for="what"></div><div class="err">Needed</div></div>
+        <div class="f full"><label for="why">Why you two or three, specifically?</label>
+          <span class="hint">What do you know or have access to that most teams applying do not?</span>
+          <textarea id="why" name="Why you" data-req maxlength="700" data-count="700"></textarea><div class="count" data-for="why"></div><div class="err">Needed</div></div>
+      </div>
+    </section>
+
+    <!-- 3 NUMBER -->
+    <section class="step" data-step="2">
+      <h2>The number</h2>
+      <p class="sub">This is the part that matters. Propose the single measurement you are willing to be judged on at week twelve. <strong>It is fixed with the expert panel before week one and it does not move afterwards.</strong></p>
+      <div class="builder">
+        <div class="k">Your win condition, as it will be published</div>
+        <div class="sent" id="sent"></div>
+      </div>
+      <div class="grid">
+        <div class="f full"><label for="metric">The metric</label>
+          <span class="hint">One quantity with a unit. "Energy per inference, in joules." Not "performance".</span>
+          <input id="metric" name="Metric" data-req data-live><div class="err">Needed</div></div>
+        <div class="f"><label for="base">Where it sits today</label>
+          <input id="base" name="Baseline today" data-req data-live placeholder="e.g. 4.1 J"><div class="err">Needed</div></div>
+        <div class="f"><label for="target">Where it will sit at week 12</label>
+          <input id="target" name="Target at week 12" data-req data-live placeholder="e.g. 0.4 J"><div class="err">Needed</div></div>
+        <div class="f full"><label for="how">How will it be measured, exactly?</label>
+          <span class="hint">The rig, the instrument, the dataset, the conditions. Enough that someone could repeat it without asking you.</span>
+          <textarea id="how" name="How it is measured" data-req maxlength="900" data-count="900"></textarea><div class="count" data-for="how"></div><div class="err">Needed</div></div>
+        <div class="f full"><label for="verify">Who outside your team could verify it?</label>
+          <span class="hint">A lab, a utility, an operator, a professor. Name them even if you have not asked yet.</span>
+          <textarea id="verify" name="Who can verify" data-req maxlength="500" data-count="500"></textarea><div class="count" data-for="verify"></div><div class="err">Needed</div></div>
+        <div class="f full"><label for="fail">What would make you fail?</label>
+          <span class="hint">The honest answer. Teams that name the real risk score better than teams that claim there is none.</span>
+          <textarea id="fail" name="What would make you fail" data-req maxlength="600" data-count="600"></textarea><div class="count" data-for="fail"></div><div class="err">Needed</div></div>
+      </div>
+    </section>
+
+    <!-- 4 EVIDENCE -->
+    <section class="step" data-step="3">
+      <h2>What exists already</h2>
+      <p class="sub">A half-built prototype is a strong application. <strong>A polished deck with nothing behind it is a weak one.</strong></p>
+      <div class="grid">
+        <div class="f full"><label for="built">What have you built so far?</label>
+          <span class="hint">Include what does not work yet. Say "nothing yet" if that is true.</span>
+          <textarea id="built" name="What exists" data-req maxlength="900" data-count="900"></textarea><div class="count" data-for="built"></div><div class="err">Needed</div></div>
+        <div class="f full"><label for="video">60-second video · link</label>
+          <span class="hint">You on camera, showing whatever exists. Unlisted YouTube, Drive, or Loom. No editing needed.</span>
+          <input id="video" name="Video link" data-req data-url placeholder="https://"><div class="err">Needs a link starting with http</div></div>
+        <div class="f full"><label for="proof">Demo, repo, or data <span class="opt">optional</span></label>
+          <textarea id="proof" name="Demo or repo" placeholder="One per line"></textarea></div>
+      </div>
+    </section>
+
+    <!-- 5 LOGISTICS -->
+    <section class="step" data-step="4">
+      <h2>Practicalities</h2>
+      <p class="sub">Twelve weeks, 2 November 2026 to 25 January 2027. Measurement day is public.</p>
+      <div class="grid">
+        <div class="f"><label for="hours">Hours per week, per person</label>
+          <select id="hours" name="Hours per week" data-req>
+            <option value="">Select…</option><option>Under 10</option><option>10 to 20</option>
+            <option>20 to 35</option><option>35 or more, full time</option>
+          </select><div class="err">Needed</div></div>
+        <div class="f"><label for="commit">Can all founders commit for all twelve weeks?</label>
+          <select id="commit" name="Full commitment" data-req>
+            <option value="">Select…</option><option>Yes, all of us</option>
+            <option>Yes, with exam weeks noted below</option><option>No, and here is why</option>
+          </select><div class="err">Needed</div></div>
+        <div class="f full"><label for="kit">What lab access, equipment, or compute do you need?</label>
+          <span class="hint">We supply rig time, licences, and introductions. Ask specifically.</span>
+          <textarea id="kit" name="Equipment needed" data-req maxlength="600" data-count="600"></textarea><div class="count" data-for="kit"></div><div class="err">Needed</div></div>
+        <div class="f full"><label for="other">Other funding, accelerators, or obligations <span class="opt">optional</span></label>
+          <span class="hint">Intilaq takes no equity, so this does not disqualify you. We just need to know.</span>
+          <textarea id="other" name="Other commitments"></textarea></div>
+        <div class="f"><label for="heard">How did you hear about Intilaq?</label>
+          <input id="heard" name="How you heard"></div>
+        <div class="f"><label for="phone">Phone for the shortlist call</label>
+          <input id="phone" name="Phone" data-req placeholder="+961…"><div class="err">Needed</div></div>
+        <div class="f full"><label for="else">Anything we did not ask <span class="opt">optional</span></label>
+          <textarea id="else" name="Anything else"></textarea></div>
+      </div>
+    </section>
+
+    <!-- 6 REVIEW -->
+    <section class="step" data-step="5">
+      <h2>Read it once, then send</h2>
+      <p class="sub">This is exactly what the panel receives. Sending opens your own mail client with the application addressed and filled in, and copies it to your clipboard at the same time.</p>
+      <div class="rev"><div class="g" id="revgrid"></div></div>
+      <div class="outbox">
+        <label class="f" style="gap:8px"><span class="mono" style="font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--acc-text)">Plain-text copy</span></label>
+        <textarea id="out" readonly aria-label="Your application as plain text"></textarea>
+      </div>
+      <div class="nav-row">
+        <button type="button" class="btn btn-glass" data-back>Back</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn btn-glass" id="copy">Copy</button>
+        <button type="button" class="btn btn-glass" id="dl" hidden>Save .txt</button>
+        <button type="button" class="btn btn-win btn-big" id="send">Send application</button>
+      </div>
+    </section>
+
+    <!-- DONE -->
+    <div class="done-panel" id="done">
+      <div class="tick">✓</div>
+      <h2>Your mail client should be open.</h2>
+      <p>If it did not open, your application is already on your clipboard, and the plain-text copy is still above. Send it to <strong>intilaq@lau.edu.lb</strong> from any mail client you like. We reply to every applicant, including the ones we turn down.</p>
+      <div class="nav-row" style="justify-content:center">
+        <button type="button" class="btn btn-glass" id="reopen">Back to my answers</button>
+      </div>
+    </div>
+
+    <div class="nav-row" id="navrow">
+      <button type="button" class="btn btn-glass" data-back hidden>Back</button>
+      <div class="spacer"></div>
+      <span class="stepmark" id="stepmark"></span>
+      <button type="button" class="btn btn-acc btn-big" data-next>Continue</button>
+    </div>
+  </form>
+</div>
+
+<footer><div class="wrap">
+  <p>Applications close 12 October 2026, 20:00 Beirut · <a href="mailto:intilaq@lau.edu.lb">intilaq@lau.edu.lb</a></p>
+</div></footer>
+
+<script>
+"use strict";
+var TO = "intilaq@lau.edu.lb";   // <-- change this one line to route applications elsewhere
+var KEY = "intilaq-application-draft";
+
+var STEPS = ["Team","Seat","The number","Evidence","Practicalities","Review"];
+var form = document.getElementById("form");
+var steps = [].slice.call(form.querySelectorAll(".step"));
+var railEl = document.getElementById("rail");
+var navrow = document.getElementById("navrow");
+var cur = 0, sent = false;
+
+/* ---------- rail ---------- */
+railEl.innerHTML = STEPS.map(function(s,i){
+  return '<li data-go="'+i+'"><span class="n"><span>'+(i+1)+'</span></span>'+s+'</li>';
+}).join("");
+
+/* ---------- pointer specular ---------- */
+document.addEventListener("pointermove", function(e){
+  var b = e.target.closest && e.target.closest(".btn");
+  if(!b) return;
+  var r = b.getBoundingClientRect();
+  b.style.setProperty("--mx", ((e.clientX-r.left)/r.width*100)+"%");
+  b.style.setProperty("--my", ((e.clientY-r.top)/r.height*100)+"%");
+}, {passive:true});
+
+/* ---------- validation ---------- */
+function fieldsOf(i){ return [].slice.call(steps[i].querySelectorAll("[data-req]")); }
+function wrapOf(el){ return el.closest(".f") || el.closest(".seats"); }
+function valid(el){
+  if(el.type === "radio"){ return !!form.querySelector('input[name="'+el.name+'"]:checked'); }
+  var v = (el.value||"").trim();
+  if(!v) return false;
+  if(el.hasAttribute("data-email")) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  if(el.hasAttribute("data-url")) return /^https?:\/\/\S+$/i.test(v);
+  return true;
+}
+function checkStep(i, mark){
+  var ok = true;
+  fieldsOf(i).forEach(function(el){
+    var good = valid(el); if(!good) ok = false;
+    var w = wrapOf(el); if(w && mark) w.classList.toggle("bad", !good);
+  });
+  return ok;
+}
+form.addEventListener("input", function(e){
+  var w = wrapOf(e.target); if(w && w.classList.contains("bad") && valid(e.target)) w.classList.remove("bad");
+  save(); live(); counts();
+});
+form.addEventListener("change", function(e){
+  var w = wrapOf(e.target); if(w) w.classList.remove("bad");
+  save(); live();
+});
+
+/* ---------- character counts ---------- */
+function counts(){
+  form.querySelectorAll("[data-count]").forEach(function(el){
+    var out = form.querySelector('.count[data-for="'+el.id+'"]'); if(!out) return;
+    var max = +el.getAttribute("data-count"), n = (el.value||"").length;
+    out.textContent = n + " / " + max;
+    out.classList.toggle("over", n > max*0.95);
+  });
+}
+
+/* ---------- the live win-condition sentence ---------- */
+function live(){
+  function g(id){ var v=(document.getElementById(id).value||"").trim(); return v; }
+  function u(v, ph){ return v ? '<u>'+esc(v)+'</u>' : '<u class="empty">'+ph+'</u>'; }
+  document.getElementById("sent").innerHTML =
+    "By 25 January 2027, we will move " + u(g("metric"),"the metric") +
+    " from " + u(g("base"),"today") + " to " + u(g("target"),"the target") +
+    ", measured in public, in front of the panel.";
+}
+function esc(s){ return s.replace(/[&<>"]/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+/* ---------- navigation ---------- */
+function show(i){
+  cur = i;
+  steps.forEach(function(s,n){ s.classList.toggle("on", n===i); });
+  [].slice.call(railEl.children).forEach(function(li,n){
+    li.setAttribute("aria-current", String(n===i));
+    li.classList.toggle("done", n<i && checkStep(n,false));
+  });
+  var last = i === steps.length-1;
+  navrow.hidden = last;
+  navrow.querySelector("[data-back]").hidden = i===0;
+  document.getElementById("stepmark").textContent = "Step "+(i+1)+" of "+steps.length;
+  document.getElementById("pbar").style.width = ((i)/(steps.length-1)*100)+"%";
+  if(last) buildReview();
+  document.getElementById("done").classList.remove("on");
+  if(sent){ sent=false; }
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+form.addEventListener("click", function(e){
+  if(e.target.closest("[data-next]")){
+    if(!checkStep(cur,true)){
+      var bad = steps[cur].querySelector(".bad");
+      if(bad) bad.scrollIntoView({block:"center",behavior:"smooth"});
+      return;
+    }
+    show(Math.min(cur+1, steps.length-1));
+  }
+  if(e.target.closest("[data-back]")) show(Math.max(cur-1,0));
+});
+railEl.addEventListener("click", function(e){
+  var li = e.target.closest("[data-go]"); if(!li) return;
+  var t = +li.dataset.go;
+  if(t <= cur){ show(t); return; }
+  for(var i=0;i<t;i++){ if(!checkStep(i,true)){ show(i); return; } }
+  show(t);
+});
+
+/* ---------- serialise ---------- */
+function answers(){
+  var out = [], seen = {};
+  form.querySelectorAll("input,textarea,select").forEach(function(el){
+    if(!el.name || seen[el.name]) return;
+    var v;
+    if(el.type === "radio"){
+      var c = form.querySelector('input[name="'+el.name+'"]:checked'); v = c ? c.value : "";
+    } else v = (el.value||"").trim();
+    seen[el.name] = 1;
+    out.push([el.name, v]);
+  });
+  return out;
+}
+function plain(){
+  var L = ["INTILAQ · COHORT ONE APPLICATION","=================================",""];
+  L.push("WIN CONDITION");
+  L.push("  By 25 January 2027, we will move " + (val("metric")||"[metric]") +
+         " from " + (val("base")||"[today]") + " to " + (val("target")||"[target]") + ".");
+  L.push("");
+  answers().forEach(function(p){
+    if(!p[1]) return;
+    L.push(p[0].toUpperCase());
+    p[1].split("\n").forEach(function(line){ L.push("  " + line); });
+    L.push("");
+  });
+  L.push("---");
+  L.push("Submitted from the Intilaq application page.");
+  return L.join("\n");
+}
+function val(id){ var e=document.getElementById(id); return e ? (e.value||"").trim() : ""; }
+
+function buildReview(){
+  var g = document.getElementById("revgrid"), html = "";
+  answers().forEach(function(p){
+    var missing = !p[1];
+    html += '<div class="k">'+esc(p[0])+'</div><div class="v'+(missing?" miss":"")+'">'+
+            (missing ? "— not answered" : esc(p[1]))+'</div>';
+  });
+  g.innerHTML = html;
+  document.getElementById("out").value = plain();
+}
+
+/* ---------- draft autosave ---------- */
+var saveT;
+function save(){
+  clearTimeout(saveT);
+  saveT = setTimeout(function(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify(answers()));
+      var s = document.getElementById("saved");
+      s.classList.add("on"); setTimeout(function(){ s.classList.remove("on"); }, 1600);
+    }catch(e){}
+  }, 500);
+}
+function restore(){
+  try{
+    var raw = localStorage.getItem(KEY); if(!raw) return;
+    JSON.parse(raw).forEach(function(p){
+      var els = form.querySelectorAll('[name="'+CSS.escape(p[0])+'"]');
+      if(!els.length) return;
+      if(els[0].type === "radio"){
+        els.forEach(function(r){ if(r.value === p[1]) r.checked = true; });
+      } else els[0].value = p[1];
+    });
+  }catch(e){}
+}
+
+/* ---------- send ---------- */
+document.getElementById("copy").addEventListener("click", function(){
+  copy(plain(), this);
+});
+function copy(text, btn){
+  var label = btn.textContent;
+  function ok(){ btn.textContent = "Copied"; setTimeout(function(){ btn.textContent = label; }, 1800); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(ok, fallback);
+  } else fallback();
+  function fallback(){
+    var t = document.getElementById("out");
+    t.focus(); t.select();
+    try{ document.execCommand("copy"); ok(); }catch(e){ btn.textContent = "Select and copy"; }
+  }
+}
+document.getElementById("send").addEventListener("click", function(){
+  var body = plain();
+  copy(body, document.getElementById("copy"));
+  var subject = "Intilaq cohort one application — " + (val("team") || "untitled team");
+  var href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  if(href.length > 7500){
+    href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" +
+      encodeURIComponent("The full application is on my clipboard — pasting it below.\n\n" +
+      "WIN CONDITION\n  By 25 January 2027, we will move " + val("metric") +
+      " from " + val("base") + " to " + val("target") + ".\n\n[paste here]");
+  }
+  window.location.href = href;
+  sent = true;
+  steps[steps.length-1].classList.remove("on");
+  document.getElementById("done").classList.add("on");
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+document.getElementById("reopen").addEventListener("click", function(){
+  document.getElementById("done").classList.remove("on");
+  show(steps.length-1);
+});
+
+/* ---------- optional: save a copy as a file ---------- */
+(async function(){
+  if(!window.claude || !claude.use) return;
+  var downloads = await claude.use("downloads");
+  if(!downloads) return;
+  var b = document.getElementById("dl");
+  b.hidden = false;
+  b.addEventListener("click", async function(){
+    try{
+      await downloads.save({ filename: "intilaq-application.txt", data: plain() });
+    }catch(e){}
+  });
+})();
+
+restore(); counts(); live(); show(0);
+</script>

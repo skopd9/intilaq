@@ -4,3 +4,5 @@ node_modules/
 .vscode/
 .idea/
 .wrangler/
+.wrangler-dry-run/
+dist/

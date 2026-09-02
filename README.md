@@ -2,7 +2,7 @@
 
 **The Start.** A competition-built incubator in Beirut. Five funded seats, twelve weeks, one measurable number per team, scored by working experts. No equity, ever.
 
-This repository is the complete public site: a landing page and a six-step application form. It is plain static HTML with no build step, no dependencies, and no server.
+This repository is the complete public site: a landing page and a six-step application form. Pages are plain static HTML. Cloudflare serves them from `public/` through a small pass-through Worker.
 
 ---
 
@@ -10,9 +10,11 @@ This repository is the complete public site: a landing page and a six-step appli
 
 | File | What it is |
 |---|---|
-| `index.html` | The landing page. Format, seats, the standard, the money ladder, partners, dates. |
-| `apply.html` | The cohort application. Six steps, autosaved draft, live win-condition builder. |
-| `tools/design-lab.html` | Internal tool. Try alternative colour palettes and typefaces on the real components. Not linked from the site. |
+| `index.html` / `apply.html` | Landing page and cohort application. Source of truth for the site. |
+| `public/` | Cloudflare publish directory. Must contain those same HTML files. |
+| `src/index.js` | Worker `fetch` handler. Serves `public/` via the `ASSETS` binding. |
+| `wrangler.jsonc` | Worker name `intilaq`, `main`, and `assets.directory = "./public"`. |
+| `tools/design-lab.html` | Internal tool. Try alternative colour palettes and typefaces. Not linked from the site. |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. |
 
 Every page is a single self-contained file. All CSS and JavaScript is inline. The only external requests are to Google Fonts.
@@ -25,7 +27,15 @@ There is no build step. Serve the folder.
 
 **GitHub Pages** — Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)`. Live in about a minute at `https://<user>.github.io/intilaq/`. Note that Pages on a **private** repository requires a paid GitHub plan; on a public repository it is free.
 
-**Cloudflare Workers** — this repo ships a `wrangler.jsonc` (Worker name `intilaq`, static `assets` served from `/`) and an `.assetsignore` that keeps `.git`, `.wrangler`, and docs out of the upload. In the dashboard: Root directory `/`, Build command empty, Deploy command `npx wrangler deploy`.
+**Cloudflare Workers** — static HTML with a small pass-through Worker. `wrangler.jsonc` names the Worker `intilaq`, points `main` at `src/index.js`, and publishes **`./public`** (not the repo root). `public/` is a copy of the root HTML files so the deploy cannot ship an empty assets bundle.
+
+Workers Builds settings that work with this repo:
+
+- Root directory: `/` (leave empty)
+- Build command: `npm run sync:assets` (copies `index.html`, `apply.html`, and `tools/` into `public/` and `dist/`)
+- Deploy command: `npx wrangler deploy` — do **not** pass `--assets ./dist` unless that folder has been synced
+
+If a previous dashboard template left the deploy command as `npx wrangler deploy --assets ./dist` (or `./public` against an empty folder), that is what produced the empty Worker and the `403 Forbidden` on intilaq.dev. Use the commands above, or `npm run deploy`.
 
 **Netlify or Vercel** — connect the repo, leave the build command empty, set the publish directory to `/`.
 
@@ -37,7 +47,7 @@ There is no build step. Serve the folder.
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Then open `http://localhost:8000`. To preview the Worker + assets the same way Cloudflare will serve them: `npm install && npm run sync:assets && npm run preview`.
 
 ---
 
