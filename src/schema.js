@@ -1,6 +1,5 @@
 /** D1 / SQLite schema for cohort applications. Also used by migrations and tests. */
-export const SCHEMA_SQL = `
-CREATE TABLE IF NOT EXISTS applications (
+export const CREATE_TABLE_SQL = `CREATE TABLE IF NOT EXISTS applications (
   id TEXT PRIMARY KEY,
   created_at TEXT NOT NULL,
   team_name TEXT NOT NULL,
@@ -40,12 +39,15 @@ CREATE TABLE IF NOT EXISTS applications (
   plain_text TEXT NOT NULL,
   ip TEXT,
   user_agent TEXT
-);
+)`;
 
-CREATE INDEX IF NOT EXISTS idx_applications_created_at ON applications(created_at);
-CREATE INDEX IF NOT EXISTS idx_applications_founder1_email ON applications(founder1_email);
-CREATE INDEX IF NOT EXISTS idx_applications_ip_created ON applications(ip, created_at);
-`;
+export const INDEX_SQL = [
+  `CREATE INDEX IF NOT EXISTS idx_applications_created_at ON applications(created_at)`,
+  `CREATE INDEX IF NOT EXISTS idx_applications_founder1_email ON applications(founder1_email)`,
+  `CREATE INDEX IF NOT EXISTS idx_applications_ip_created ON applications(ip, created_at)`,
+];
+
+export const SCHEMA_SQL = [CREATE_TABLE_SQL, ...INDEX_SQL].join(";\n") + ";";
 
 /**
  * Form field name → column, required?, max length.

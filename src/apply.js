@@ -1,10 +1,11 @@
 import {
+  CREATE_TABLE_SQL,
   FIELDS,
   GET_SQL,
+  INDEX_SQL,
   INSERT_SQL,
   LIST_SQL,
   RATE_LIMIT_SQL,
-  SCHEMA_SQL,
 } from "./schema.js";
 
 const MAX_BODY = 100_000;
@@ -74,7 +75,9 @@ export function clientIp(request) {
 }
 
 export async function ensureSchema(db) {
-  await db.exec(SCHEMA_SQL);
+  // D1 exec() splits on newlines, so apply each statement with prepare().
+  await db.prepare(CREATE_TABLE_SQL).bind().run();
+  for (const sql of INDEX_SQL) await db.prepare(sql).bind().run();
 }
 
 export async function handleApply(request, env) {
