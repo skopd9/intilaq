@@ -30,7 +30,7 @@ assert(
 );
 assert(wrangler.assets?.binding === "ASSETS", "assets.binding must be ASSETS");
 
-const required = ["index.html", "apply.html", "tools/design-lab.html"];
+const required = ["index.html", "apply.html", "tools/design-lab.html", "_headers"];
 for (const file of required) {
   const publicFile = join("public", file);
   assert(size(publicFile) > 0, `${publicFile} is missing or empty`);
@@ -40,10 +40,22 @@ for (const file of required) {
   );
 }
 
+for (const file of ["apply.html", "index.html", "tools/design-lab.html"]) {
+  const head = read(file).slice(0, 1024);
+  assert(
+    /<meta\s+charset=["']utf-8["']/i.test(head),
+    `${file} must declare <meta charset="utf-8"> in the first 1024 bytes`
+  );
+}
+
 const worker = read("src/index.js");
 assert(worker.includes("export default"), "Worker must export a default handler");
 assert(worker.includes("fetch"), "Worker must export a fetch handler");
 assert(worker.includes("ASSETS"), "Worker must serve via the ASSETS binding");
+assert(
+  worker.includes("charset=utf-8"),
+  "Worker must set Content-Type charset=utf-8 on HTML responses"
+);
 
 if (failures.length) {
   console.error("Asset check failed:\n- " + failures.join("\n- "));

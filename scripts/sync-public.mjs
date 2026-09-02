@@ -8,6 +8,7 @@ const files = [
   ["index.html", "index.html"],
   ["apply.html", "apply.html"],
   [".nojekyll", ".nojekyll"],
+  ["_headers", "_headers"],
   ["tools/design-lab.html", "tools/design-lab.html"],
 ];
 
