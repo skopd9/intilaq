@@ -25,6 +25,8 @@ There is no build step. Serve the folder.
 
 **GitHub Pages** — Settings → Pages → Source: *Deploy from a branch* → `main` / `/ (root)`. Live in about a minute at `https://<user>.github.io/intilaq/`. Note that Pages on a **private** repository requires a paid GitHub plan; on a public repository it is free.
 
+**Cloudflare Workers** — this repo ships a `wrangler.jsonc` (Worker name `intilaq`, static `assets` served from `/`) and an `.assetsignore` that keeps `.git`, `.wrangler`, and docs out of the upload. In the dashboard: Root directory `/`, Build command empty, Deploy command `npx wrangler deploy`.
+
 **Netlify or Vercel** — connect the repo, leave the build command empty, set the publish directory to `/`.
 
 **Any other host** — upload the files. Apache, nginx, S3, a USB stick. It is static HTML.
