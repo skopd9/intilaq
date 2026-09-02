@@ -207,6 +207,8 @@ input:focus,textarea:focus,select:focus{outline:none;background:#fff;
 .rev .g>div.v.miss{color:var(--cut)}
 .outbox{margin-top:22px}
 .outbox textarea{min-height:220px;font-family:"Geist Mono",ui-monospace,monospace;font-size:12.5px;line-height:1.6}
+.send-err{margin-top:16px;color:var(--cut);font-size:15px;display:none}
+.send-err.on{display:block}
 
 /* done */
 .done-panel{display:none;text-align:center;padding:20px 0}
@@ -420,15 +422,16 @@ footer a{color:var(--body)}
         <div class="spacer"></div>
         <button type="button" class="btn btn-glass" id="copy">Copy</button>
         <button type="button" class="btn btn-glass" id="dl" hidden>Save .txt</button>
-        <button type="button" class="btn btn-win btn-big" id="send">Send application</button>
+        <button type="button" class="btn btn-win btn-big" id="send">Submit application</button>
       </div>
+      <p class="send-err" id="senderr" role="alert"></p>
     </section>
 
     <!-- DONE -->
     <div class="done-panel" id="done">
       <div class="tick">✓</div>
-      <h2>Your mail client should be open.</h2>
-      <p>If it did not open, your application is already on your clipboard, and the plain-text copy is still above. Send it to <strong>intilaq@lau.edu.lb</strong> from any mail client you like. We reply to every applicant, including the ones we turn down.</p>
+      <h2 id="done-title">Your application is on file.</h2>
+      <p id="done-copy">We stored every answer. A copy is on your clipboard if you want one. We reply to every applicant, including the ones we turn down.</p>
       <div class="nav-row" style="justify-content:center">
         <button type="button" class="btn btn-glass" id="reopen">Back to my answers</button>
       </div>
@@ -645,22 +648,65 @@ function copy(text, btn){
   }
 }
 document.getElementById("send").addEventListener("click", function(){
-  var body = plain();
-  copy(body, document.getElementById("copy"));
-  var subject = "Intilaq cohort one application — " + (val("team") || "untitled team");
-  var href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-  if(href.length > 7500){
-    href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" +
-      encodeURIComponent("The full application is on my clipboard — pasting it below.\n\n" +
-      "WIN CONDITION\n  By 25 January 2027, we will move " + val("metric") +
-      " from " + val("base") + " to " + val("target") + ".\n\n[paste here]");
-  }
-  window.location.href = href;
+  submitApplication();
+});
+function showDone(title, copy){
+  document.getElementById("done-title").textContent = title;
+  document.getElementById("done-copy").innerHTML = copy;
   sent = true;
   steps[steps.length-1].classList.remove("on");
   document.getElementById("done").classList.add("on");
   window.scrollTo({top:0,behavior:"smooth"});
-});
+}
+function sendErr(msg){
+  var el = document.getElementById("senderr");
+  el.textContent = msg;
+  el.classList.toggle("on", !!msg);
+}
+async function submitApplication(){
+  var btn = document.getElementById("send");
+  if(btn.disabled) return;
+  sendErr("");
+  var body = plain();
+  var payload = { answers: Object.fromEntries(answers()), plain: body };
+  btn.disabled = true;
+  btn.textContent = "Saving…";
+  try{
+    var res = await fetch("/api/apply", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    var data = {};
+    try{ data = await res.json(); }catch(e){}
+    if(!res.ok) throw new Error(data.error || "Could not save the application.");
+    copy(body, document.getElementById("copy"));
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    showDone(
+      "Your application is on file.",
+      "We stored every answer. A copy is on your clipboard if you want one. We reply to every applicant, including the ones we turn down."
+    );
+  }catch(err){
+    sendErr((err && err.message) || "Could not save. You can still email it.");
+    copy(body, document.getElementById("copy"));
+    var subject = "Intilaq cohort one application — " + (val("team") || "untitled team");
+    var href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+    if(href.length > 7500){
+      href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" +
+        encodeURIComponent("The full application is on my clipboard — pasting it below.\n\n" +
+        "WIN CONDITION\n  By 25 January 2027, we will move " + val("metric") +
+        " from " + val("base") + " to " + val("target") + ".\n\n[paste here]");
+    }
+    window.location.href = href;
+    showDone(
+      "Saved to your mail client.",
+      "The database did not accept this send, so we opened your mail client instead. If it did not open, the application is on your clipboard — send it to <strong>intilaq@lau.edu.lb</strong>."
+    );
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "Submit application";
+  }
+}
 document.getElementById("reopen").addEventListener("click", function(){
   document.getElementById("done").classList.remove("on");
   show(steps.length-1);

@@ -6,7 +6,8 @@
     "sync:assets": "node scripts/sync-public.mjs",
     "deploy": "node scripts/sync-public.mjs && wrangler deploy",
     "preview": "wrangler dev",
-    "test": "node scripts/check-assets.mjs"
+    "test": "node --test scripts/test-apply.mjs && node scripts/check-assets.mjs",
+    "test:apply": "node --test scripts/test-apply.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.37.0"

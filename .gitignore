@@ -6,3 +6,4 @@ node_modules/
 .wrangler/
 .wrangler-dry-run/
 dist/
+.dev.vars

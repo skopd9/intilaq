@@ -12,8 +12,10 @@ This repository is the complete public site: a landing page and a six-step appli
 |---|---|
 | `index.html` / `apply.html` | Landing page and cohort application. Source of truth for the site. |
 | `public/` | Cloudflare publish directory. Must contain those same HTML files. |
-| `src/index.js` | Worker `fetch` handler. Serves `public/` via the `ASSETS` binding. |
-| `wrangler.jsonc` | Worker name `intilaq`, `main`, and `assets.directory = "./public"`. |
+| `src/index.js` | Worker `fetch` handler. Serves `public/` and `POST /api/apply`. |
+| `src/apply.js` | Validates an application and writes it to D1. |
+| `migrations/` | D1 schema for the `applications` table. |
+| `wrangler.jsonc` | Worker name `intilaq`, `main`, `assets.directory = "./public"`, and the `DB` D1 binding. |
 | `tools/design-lab.html` | Internal tool. Try alternative colour palettes and typefaces. Not linked from the site. |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. |
 
@@ -53,13 +55,37 @@ Then open `http://localhost:8000`. To preview the Worker + assets the same way C
 
 ## Changing things you will actually want to change
 
-**Where applications are sent.** One line, at the top of the `<script>` block in `apply.html`:
+**Where applications are stored.** Submit writes every field to a Cloudflare D1 database named `intilaq` (binding `DB`). The Worker also keeps a plain-text copy of the application. If the database write fails, the form falls back to the applicant's mail client, addressed to:
 
 ```js
 var TO = "intilaq@lau.edu.lb";
 ```
 
-**Important:** the form has no backend. Submitting opens the applicant's own mail client, pre-addressed and pre-filled, and copies the full application to their clipboard as a fallback. It does not send mail server-side, because a static site cannot. For applications to arrive without the applicant completing the send, point the form at a real endpoint — Formspree, Resend, or a Cloudflare Worker — which needs an API key you hold.
+Create the production database once (requires `wrangler login`):
+
+```bash
+npx wrangler d1 create intilaq
+```
+
+Put the returned `database_id` into `wrangler.jsonc`, then apply the schema and deploy:
+
+```bash
+npx wrangler d1 migrations apply intilaq --remote
+npm run deploy
+```
+
+Local preview creates a local D1 automatically:
+
+```bash
+npx wrangler d1 migrations apply intilaq --local
+npm run preview
+```
+
+List stored applications (set `ADMIN_TOKEN` as a Worker secret, or in `.dev.vars` locally):
+
+```bash
+curl -H "Authorization: Bearer $ADMIN_TOKEN" https://intilaq.dev/api/applications
+```
 
 **Dates.** The deadline appears in three places: the countdown target in the `<script>` at the bottom of `index.html` (an ISO timestamp), the ticker text, and the dates section.
 

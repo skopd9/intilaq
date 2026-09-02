@@ -29,6 +29,8 @@ assert(
   `assets.directory must be ./public (got ${wrangler.assets?.directory})`
 );
 assert(wrangler.assets?.binding === "ASSETS", "assets.binding must be ASSETS");
+assert(Array.isArray(wrangler.d1_databases) && wrangler.d1_databases[0]?.binding === "DB", "D1 binding DB is required");
+assert(wrangler.d1_databases[0]?.database_name === "intilaq", "D1 database_name must be intilaq");
 
 const required = ["index.html", "apply.html", "tools/design-lab.html", "_headers"];
 for (const file of required) {
@@ -56,6 +58,8 @@ assert(
   worker.includes("charset=utf-8"),
   "Worker must set Content-Type charset=utf-8 on HTML responses"
 );
+assert(worker.includes("/api/apply"), "Worker must handle POST /api/apply");
+assert(read("apply.html").includes('fetch("/api/apply"'), "apply.html must POST to /api/apply");
 
 if (failures.length) {
   console.error("Asset check failed:\n- " + failures.join("\n- "));

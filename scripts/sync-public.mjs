@@ -22,3 +22,4 @@ for (const dir of ["public", "dist"]) {
 }
 
 console.log("Synced site files into public/ and dist/");
+

@@ -1,0 +1,3 @@
+# Copy to .dev.vars for local `wrangler dev`.
+# Protects GET /api/applications — never commit the real value.
+ADMIN_TOKEN=change-me
