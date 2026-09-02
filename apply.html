@@ -641,6 +641,13 @@ function copy(text, btn){
 document.getElementById("send").addEventListener("click", function(){
   var body = plain();
   copy(body, document.getElementById("copy"));
+  try{
+    fetch("/api/apply", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({answers: answers()})
+    });
+  }catch(e){}
   var subject = "Intilaq cohort one application — " + (val("team") || "untitled team");
   var href = "mailto:" + TO + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
   if(href.length > 7500){
