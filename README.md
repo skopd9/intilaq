@@ -17,6 +17,7 @@ This repository is the complete public site: a landing page and a six-step appli
 | `migrations/` | D1 schema for the `applications` table. |
 | `wrangler.jsonc` | Worker name `intilaq`, `main`, `assets.directory = "./public"`, and the `DB` D1 binding. |
 | `tools/design-lab.html` | Internal tool. Try alternative colour palettes and typefaces. Not linked from the site. |
+| `admin.html` | Password-gated list of submitted applications (`GET /api/applications`). Not linked from the site. |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is. |
 
 Every page is a single self-contained file. All CSS and JavaScript is inline. The only external requests are to Google Fonts.
@@ -81,7 +82,7 @@ npx wrangler d1 migrations apply intilaq --local
 npm run preview
 ```
 
-List stored applications (set `ADMIN_TOKEN` as a Worker secret, or in `.dev.vars` locally):
+List stored applications (set `ADMIN_TOKEN` as a Worker secret, or in `.dev.vars` locally). Either open `/admin.html` on the deployed site and enter that token, or:
 
 ```bash
 curl -H "Authorization: Bearer $ADMIN_TOKEN" https://intilaq.dev/api/applications

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Intilaq · Applications</title>
+<style>
+  :root{
+    --bg:#0B0E13; --panel:#151B23; --line:#2B3440; --text:#EAEDF1; --dim:#8A93A0;
+    --win:#0F9D63; --mono:'Geist Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:32px 20px 80px}
+  .wrap{max-width:1100px;margin:0 auto}
+  h1{font-size:20px;margin:0 0 4px}
+  .sub{color:var(--dim);margin:0 0 24px;font-size:13px}
+  .login{max-width:360px;margin:80px auto;text-align:center}
+  input{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:10px 12px;font:inherit;width:100%}
+  button{background:var(--win);color:#04070B;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;margin-top:10px}
+  button.secondary{background:transparent;color:var(--text);border:1px solid var(--line);margin-left:8px;margin-top:0}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .count{color:var(--dim);font-family:var(--mono);font-size:12px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--dim);font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;position:sticky;top:0;background:var(--bg)}
+  tr:hover td{background:var(--panel);cursor:pointer}
+  .id{font-family:var(--mono);color:var(--dim);font-size:11px}
+  .empty,.error{color:var(--dim);text-align:center;padding:60px 0}
+  .error{color:#C2321F}
+  dialog{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;max-width:720px;width:92vw;padding:0}
+  dialog::backdrop{background:rgba(0,0,0,.6)}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .modal-body{padding:16px 20px;max-height:70vh;overflow:auto}
+  .meta{color:var(--dim);font-family:var(--mono);font-size:12px;margin-bottom:12px}
+  pre{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:12.5px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="login" class="login">
+    <h1>Intilaq applications</h1>
+    <p class="sub">Enter the admin token to view submissions.</p>
+    <input id="pw" type="password" placeholder="Admin token" autocomplete="current-password">
+    <button id="go">View applications</button>
+    <p id="loginErr" class="error" style="display:none;padding:12px 0 0"></p>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="bar">
+      <div>
+        <h1>Applications</h1>
+        <p class="sub">Cohort one — stored in D1. Click a row for the full plain-text application.</p>
+      </div>
+      <div>
+        <span id="count" class="count"></span>
+        <button id="csv" class="secondary">Export CSV</button>
+        <button id="refresh" class="secondary">Refresh</button>
+      </div>
+    </div>
+    <div id="listing"></div>
+  </div>
+</div>
+
+<dialog id="detail">
+  <div class="modal-head">
+    <strong id="detailTitle">Application</strong>
+    <button id="closeDetail" class="secondary">Close</button>
+  </div>
+  <div class="modal-body">
+    <div id="detailMeta" class="meta"></div>
+    <pre id="detailText">Loading…</pre>
+  </div>
+</dialog>
+
+<script>
+"use strict";
+var TOKEN_KEY = "intilaq-admin-token";
+var rows = [];
+
+var loginEl = document.getElementById("login");
+var appEl = document.getElementById("app");
+var pwEl = document.getElementById("pw");
+var loginErr = document.getElementById("loginErr");
+var dialogEl = document.getElementById("detail");
+
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+function authedFetch(path, token){
+  return fetch(path, { headers: { "Authorization": "Bearer " + token } });
+}
+
+async function load(token){
+  loginErr.style.display = "none";
+  var res;
+  try{
+    res = await authedFetch("/api/applications", token);
+  }catch(e){
+    loginErr.textContent = "Network error."; loginErr.style.display = "block"; return;
+  }
+  if(res.status === 401){
+    loginErr.textContent = "Wrong token."; loginErr.style.display = "block";
+    sessionStorage.removeItem(TOKEN_KEY);
+    return;
+  }
+  if(res.status === 404){
+    loginErr.textContent = "ADMIN_TOKEN is not set on the Worker yet — see the README."; loginErr.style.display = "block";
+    return;
+  }
+  if(!res.ok){
+    loginErr.textContent = "Error loading applications (" + res.status + ")."; loginErr.style.display = "block"; return;
+  }
+  var body = await res.json();
+  rows = body.applications || [];
+  sessionStorage.setItem(TOKEN_KEY, token);
+  loginEl.style.display = "none";
+  appEl.style.display = "block";
+  render();
+}
+
+function render(){
+  document.getElementById("count").textContent = rows.length + " application" + (rows.length===1?"":"s") + (rows.length >= 200 ? " (showing latest 200)" : "");
+  var out = document.getElementById("listing");
+  if(!rows.length){ out.innerHTML = '<p class="empty">No applications yet.</p>'; return; }
+  var html = '<table><thead><tr><th>Received</th><th>Team</th><th>Founder 1</th><th>Founder 2</th><th>Seat</th><th>One line</th><th>Metric</th><th>Phone</th></tr></thead><tbody>';
+  rows.forEach(function(r){
+    html += '<tr data-id="'+esc(r.id)+'">' +
+      '<td>'+esc(new Date(r.created_at).toLocaleString())+'</td>' +
+      '<td>'+esc(r.team_name||"—")+'</td>' +
+      '<td>'+esc(r.founder1_name||"—")+'<br><span class="id">'+esc(r.founder1_email||"")+'</span></td>' +
+      '<td>'+esc(r.founder2_name||"—")+'<br><span class="id">'+esc(r.founder2_email||"")+'</span></td>' +
+      '<td>'+esc(r.seat||"—")+'</td>' +
+      '<td>'+esc(r.one_line||"—")+'</td>' +
+      '<td>'+esc(r.metric||"—")+'</td>' +
+      '<td>'+esc(r.phone||"—")+'</td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  out.innerHTML = html;
+}
+
+async function openDetail(id){
+  var token = sessionStorage.getItem(TOKEN_KEY);
+  document.getElementById("detailTitle").textContent = "Application";
+  document.getElementById("detailMeta").textContent = "";
+  document.getElementById("detailText").textContent = "Loading…";
+  dialogEl.showModal();
+  var res = await authedFetch("/api/applications?id=" + encodeURIComponent(id), token);
+  if(!res.ok){
+    document.getElementById("detailText").textContent = "Could not load this application (" + res.status + ").";
+    return;
+  }
+  var body = await res.json();
+  var a = body.application;
+  if(!a){ document.getElementById("detailText").textContent = "Not found."; return; }
+  document.getElementById("detailTitle").textContent = a.team_name || "Application";
+  document.getElementById("detailMeta").textContent =
+    "Received " + new Date(a.created_at).toLocaleString() +
+    (a.ip ? " · IP " + a.ip : "") + (a.user_agent ? " · " + a.user_agent : "");
+  document.getElementById("detailText").textContent = a.plain_text || "(no plain-text copy stored)";
+}
+
+function toCSV(){
+  var cols = ["id","created_at","team_name","founder1_name","founder1_email","founder2_name","founder2_email","seat","one_line","metric","phone"];
+  var lines = [cols.map(csvCell).join(",")];
+  rows.forEach(function(r){
+    lines.push(cols.map(function(c){ return csvCell(r[c]); }).join(","));
+  });
+  return lines.join("\r\n");
+}
+function csvCell(v){
+  v = String(v==null?"":v);
+  if(/[",\r\n]/.test(v)) v = '"' + v.replace(/"/g,'""') + '"';
+  return v;
+}
+
+document.getElementById("go").addEventListener("click", function(){
+  var pw = pwEl.value.trim();
+  if(!pw) return;
+  load(pw);
+});
+pwEl.addEventListener("keydown", function(e){ if(e.key === "Enter") document.getElementById("go").click(); });
+
+document.getElementById("refresh").addEventListener("click", function(){
+  var token = sessionStorage.getItem(TOKEN_KEY);
+  if(token) load(token);
+});
+
+document.getElementById("listing").addEventListener("click", function(e){
+  var tr = e.target.closest("tr[data-id]");
+  if(tr) openDetail(tr.dataset.id);
+});
+document.getElementById("closeDetail").addEventListener("click", function(){ dialogEl.close(); });
+
+document.getElementById("csv").addEventListener("click", function(){
+  var blob = new Blob([toCSV()], { type: "text/csv" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "intilaq-applications.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+});
+
+(function(){
+  var token = sessionStorage.getItem(TOKEN_KEY);
+  if(token) load(token);
+})();
+</script>
+</body>
+</html>
