@@ -37,7 +37,7 @@ Workers Builds settings that work with this repo:
 - Build command: empty, or `npm run sync:assets`
 - Deploy command: **`npm run deploy`** (creates the D1 database if needed, applies migrations, then `wrangler deploy`)
 
-`npx wrangler deploy` alone fails while `wrangler.jsonc` still has the placeholder `database_id`. `npm run deploy` and the install `postinstall` hook run `scripts/ensure-d1.mjs`, which creates a D1 database named `intilaq` in this account (or reuses it) and writes the real id into `wrangler.jsonc` for that build.
+The production D1 database is `intilaq` (`ff74c443-dd9c-4630-80d2-73139561c5af`). `wrangler.jsonc` already has that id, so a bare `npx wrangler deploy` can bind `DB`. `npm run deploy` and `postinstall` still run `scripts/ensure-d1.mjs` to reuse that database and apply migrations.
 
 If a previous dashboard template left the deploy command as `npx wrangler deploy --assets ./dist` (or `./public` against an empty folder), that is what produced the empty Worker and the `403 Forbidden` on intilaq.dev.
 
