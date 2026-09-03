@@ -35,10 +35,12 @@ There is no build step. Serve the folder.
 Workers Builds settings that work with this repo:
 
 - Root directory: `/` (leave empty)
-- Build command: `npm run sync:assets` (copies `index.html`, `apply.html`, and `tools/` into `public/` and `dist/`)
-- Deploy command: `npx wrangler deploy` — do **not** pass `--assets ./dist` unless that folder has been synced
+- Build command: empty, or `npm run sync:assets`
+- Deploy command: **`npm run deploy`** (creates the D1 database if needed, applies migrations, then `wrangler deploy`)
 
-If a previous dashboard template left the deploy command as `npx wrangler deploy --assets ./dist` (or `./public` against an empty folder), that is what produced the empty Worker and the `403 Forbidden` on intilaq.dev. Use the commands above, or `npm run deploy`.
+The production D1 database is `intilaq` (`ff74c443-dd9c-4630-80d2-73139561c5af`). `wrangler.jsonc` already has that id, so a bare `npx wrangler deploy` can bind `DB`. `npm run deploy` and `postinstall` still run `scripts/ensure-d1.mjs` to reuse that database and apply migrations.
+
+If a previous dashboard template left the deploy command as `npx wrangler deploy --assets ./dist` (or `./public` against an empty folder), that is what produced the empty Worker and the `403 Forbidden` on intilaq.dev.
 
 **Netlify or Vercel** — connect the repo, leave the build command empty, set the publish directory to `/`.
 
@@ -62,18 +64,14 @@ Then open `http://localhost:8000`. To preview the Worker + assets the same way C
 var TO = "intilaq@lau.edu.lb";
 ```
 
-Create the production database once (requires `wrangler login`):
+Production D1 is created automatically on deploy (`npm run deploy` or the `postinstall` hook). To do it by hand:
 
 ```bash
 npx wrangler d1 create intilaq
-```
-
-Put the returned `database_id` into `wrangler.jsonc`, then apply the schema and deploy:
-
-```bash
 npx wrangler d1 migrations apply intilaq --remote
-npm run deploy
 ```
+
+Then put the returned `database_id` in `wrangler.jsonc` if you are deploying with a bare `npx wrangler deploy`.
 
 Local preview creates a local D1 automatically:
 

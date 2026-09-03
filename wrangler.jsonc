@@ -13,8 +13,7 @@
     {
       "binding": "DB",
       "database_name": "intilaq",
-      // Replace database_id after: npx wrangler d1 create intilaq
-      "database_id": "00000000-0000-4000-8000-000000000001",
+      "database_id": "ff74c443-dd9c-4630-80d2-73139561c5af",
       "migrations_dir": "migrations"
     }
   ]
