@@ -32,7 +32,7 @@ assert(wrangler.assets?.binding === "ASSETS", "assets.binding must be ASSETS");
 assert(Array.isArray(wrangler.d1_databases) && wrangler.d1_databases[0]?.binding === "DB", "D1 binding DB is required");
 assert(wrangler.d1_databases[0]?.database_name === "intilaq", "D1 database_name must be intilaq");
 
-const required = ["index.html", "apply.html", "tools/design-lab.html", "_headers"];
+const required = ["index.html", "apply.html", "admin.html", "tools/design-lab.html", "_headers"];
 for (const file of required) {
   const publicFile = join("public", file);
   assert(size(publicFile) > 0, `${publicFile} is missing or empty`);
@@ -42,7 +42,7 @@ for (const file of required) {
   );
 }
 
-for (const file of ["apply.html", "index.html", "tools/design-lab.html"]) {
+for (const file of ["apply.html", "index.html", "admin.html", "tools/design-lab.html"]) {
   const head = read(file).slice(0, 1024);
   assert(
     /<meta\s+charset=["']utf-8["']/i.test(head),
@@ -60,6 +60,9 @@ assert(
 );
 assert(worker.includes("/api/apply"), "Worker must handle POST /api/apply");
 assert(read("apply.html").includes('fetch("/api/apply"'), "apply.html must POST to /api/apply");
+
+assert(worker.includes("/api/applications"), "Worker must handle GET /api/applications");
+assert(read("admin.html").includes("/api/applications"), "admin.html must call GET /api/applications");
 
 if (failures.length) {
   console.error("Asset check failed:\n- " + failures.join("\n- "));

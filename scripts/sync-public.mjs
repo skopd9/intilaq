@@ -7,6 +7,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const files = [
   ["index.html", "index.html"],
   ["apply.html", "apply.html"],
+  ["admin.html", "admin.html"],
   [".nojekyll", ".nojekyll"],
   ["_headers", "_headers"],
   ["tools/design-lab.html", "tools/design-lab.html"],
