@@ -4,9 +4,11 @@
   "type": "module",
   "scripts": {
     "sync:assets": "node scripts/sync-public.mjs",
-    "deploy": "node scripts/sync-public.mjs && wrangler deploy",
+    "ensure:d1": "node scripts/ensure-d1.mjs",
+    "postinstall": "node scripts/ensure-d1.mjs",
+    "deploy": "node scripts/sync-public.mjs && node scripts/ensure-d1.mjs && wrangler deploy",
     "preview": "wrangler dev",
-    "test": "node --test scripts/test-apply.mjs && node scripts/check-assets.mjs",
+    "test": "node --test scripts/test-apply.mjs scripts/test-ensure-d1.mjs && node scripts/check-assets.mjs",
     "test:apply": "node --test scripts/test-apply.mjs"
   },
   "devDependencies": {
